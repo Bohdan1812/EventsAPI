@@ -1,9 +1,0 @@
-﻿global using AutoMapper;
-global using EventsAPI.Models;
-global using EventsAPI.Models.DTOs;
-global using Microsoft.AspNetCore.Identity;
-global using Microsoft.AspNetCore.Mvc;
-global using EventsAPI.Services.UserSevices;
-global using Microsoft.AspNetCore.Authorization;
-global using EventsAPI.Services.EventSevices;
-global using AutoMapper;

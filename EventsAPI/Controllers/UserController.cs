@@ -1,76 +1,72 @@
-﻿using Azure;
+﻿using Application.Users.Commands.Delete;
+using Application.Users.Commands.Update;
+using Contracts.Authentication;
+using Contracts.User;
+using Domain.Common.Models;
+using ErrorOr;
+using MapsterMapper;
+using MediatR;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
-namespace EventsAPI.Controllers
+namespace Api.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class UserController : ControllerBase
+    [Route("User")]
+    public class UserController : ApiController
     {
-        private readonly IUserService _userService;
+        private readonly ISender _mediator;
+
+        private readonly IMapper _mapper;
+
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public UserController(IUserService userService, UserManager<ApplicationUser> userManager)
+
+        public UserController(IMapper mapper, ISender mediator, UserManager<ApplicationUser> userManager)
         {
-            _userService = userService;
-            _userManager = userManager;;
+            _mapper = mapper;
+            _mediator = mediator;
+            _userManager = userManager;
         }
 
-        [Authorize]
-        [HttpGet("GetAll")]
-        public async Task<ActionResult<ServiceResponse<List<User>>>> GetAllUsers()
+
+        [HttpPost("updateUser")]
+        public async Task<IActionResult> UpdateUser(UpdateUserRequestModel request)
         {
-            
-            return Ok(await _userService.GetAllUsers());
-        }
-        [Authorize]
-        [HttpGet("{id}")]
-        public async Task<ActionResult<ServiceResponse<User>>> GetUser(Guid id)
-        {
-            return Ok(await _userService.GetUserById(id));
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (String.IsNullOrEmpty(userId))
+            {
+                return BadRequest("User not found!");
+            }
+
+            var command = _mapper.Map<UpdateUserCommand>((new Guid(userId), request));
+
+            ErrorOr<string> updateResut = await _mediator.Send(command);
+
+            return updateResut.Match(
+                updateResut => Ok(updateResut),
+                errors => Problem(errors));
         }
 
-        [Authorize]
-        [HttpGet("GetCurrentUser")]
-        public async Task<ActionResult<User>> GetCurrentUser()
-        {
-            var user = await _userManager.GetUserAsync(User);
-            var eventUser = user.EventUser;
-            if (eventUser is null) 
-            {
-                return NotFound();
-            }
-            return Ok(eventUser);
-        }
-        [Authorize]
-        [HttpPost("AddUser")]
-        public async Task<ActionResult<ServiceResponse<User>>> AddUser(AddUserDto newCharacter)
-        {
-            var user = await _userManager.GetUserAsync(User);
-            return Ok(await _userService.AddUser(newCharacter, user.Id));
-        }
-        [Authorize]
-        [HttpPut("UpdateUser")]
-        public async Task<ActionResult<ServiceResponse<User>>> UpdateUser(User updatedUser)
-        {
-            var response = await _userService.UpdateUser(updatedUser);
-            if (response.Data is null)
-            {
-                return NotFound(response);
-            }
-            return Ok(response);
-        }
-        [Authorize]
-        [HttpDelete("DeleteUser")]
-        public async Task<ActionResult<ServiceResponse<bool>>> DeleteUser()
+
+        [HttpDelete("deleteUser")]
+        public async Task<IActionResult> DeleteAccount(DeleteAccountRequestModel request)
         {
             var appUser = await _userManager.GetUserAsync(User);
 
-            var response = new ServiceResponse<User>();//await _userService.DeleteUser(, user.Id);
-            if (response.Success is false)
+            if (appUser is null)
             {
-                return NotFound(response);
+                return BadRequest("User not found!");
             }
-            return Ok(response);
+
+            var command = _mapper.Map<DeleteAccountCommand>((appUser.Id, request));
+
+            ErrorOr<string> deleteResult = await _mediator.Send(command);
+
+            return deleteResult.Match(
+               authReult => Ok(authReult),
+               errors => Problem(errors));
         }
     }
 }

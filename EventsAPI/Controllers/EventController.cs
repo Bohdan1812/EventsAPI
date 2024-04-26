@@ -1,64 +1,103 @@
-﻿
-namespace EventsAPI.Controllers
+﻿using Application.Events.Commands.Create;
+using Application.Events.Commands.Delete;
+using Application.Events.Queries.GetEvent;
+using Application.Events.Queries.GetUserEvents;
+using Application.Users.Commands.Update;
+using Contracts.Event;
+using Domain.Common.Models;
+using Domain.EventAggregate;
+using ErrorOr;
+using MapsterMapper;
+using MediatR;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
+
+namespace Api.Controllers
 {
-    public class EventController : Controller
+    [Route("Event")]
+    public class EventController : ApiController
     {
-        private readonly IEventService _eventService;
+        private readonly ISender _mediator;
+
+        private readonly IMapper _mapper;
+
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public EventController(IEventService eventService, UserManager<ApplicationUser> userManager)
+
+        public EventController(IMapper mapper, ISender mediator, UserManager<ApplicationUser> userManager)
         {
-            _eventService = eventService;
-            _userManager = userManager; ;
+            _mapper = mapper;
+            _mediator = mediator;
+            _userManager = userManager;
         }
 
-
-        [Authorize]
-        [HttpGet("GetAll")]
-        public async Task<ActionResult<ServiceResponse<List<Event>>>> GetAllEvents()
+        [HttpPut("createEvent")]
+        public async Task<IActionResult> CreateEvent(CreateEventRequestModel request)
         {
-            var user = await _userManager.GetUserAsync(User);
-            return Ok(await _eventService.GetAllEvents(user.EventUser.Id));
-        }
-
-        [Authorize]
-        [HttpGet("{id}")]
-        public async Task<ActionResult<ServiceResponse<Event>>> GetEvent(Guid id)
-        {
-            return Ok(await _eventService.GetEventById(id));
-        }
-
-        [Authorize]
-        [HttpPost("AddEvent")]
-        public async Task<ActionResult<ServiceResponse<User>>> AddUser(AddEventDto newEvent)
-        {
-            var user = await _userManager.GetUserAsync(User);
-            return Ok(await _eventService.AddEvent(user.EventUser.Id, newEvent));
-        }
-
-        [Authorize]
-        [HttpPut("UpdateEvent")]
-        public async Task<ActionResult<ServiceResponse<Event>>> UpdateEvent(Event updatedEvent)
-        {
-            var response = await _eventService.UpdateEvent(updatedEvent);
-            if (response.Data is null)
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            
+            if (String.IsNullOrEmpty(userId))
             {
-                return NotFound(response);
+                return BadRequest("User not found!");
             }
-            return Ok(response);
+
+            var command = _mapper.Map<CreateEventCommand>((new Guid(userId), request));
+            ErrorOr<string> createEventResult = await _mediator.Send(command);
+
+            return createEventResult.Match(
+                createEventResult => Ok(createEventResult),
+                errors => Problem(errors));
         }
 
-        [Authorize]
-        [HttpDelete("DeleteEvent")]
-        public async Task<ActionResult<ServiceResponse<bool>>> DeleteEvent(Guid id)
+        [HttpGet("getEventById")]
+        public async Task<IActionResult> GetEventById([FromQuery] GetEventRequestModel request)
         {
-            var user = await _userManager.GetUserAsync(User);
-            var response = await _eventService.DeleteEvent(user.EventUser.Id, id);
-            if (!response.Data)
-            {
-                return NotFound(response);
+            var command = _mapper.Map<GetEventQuery>(request);
+
+            var getEventResult = await _mediator.Send(command);
+
+            return getEventResult.Match(
+                getEventResult => Ok(getEventResult),
+                errors => Problem(errors));
+        }
+
+        [HttpGet("getOrganizerEvents")]
+        public async Task<IActionResult> GetEventById()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (String.IsNullOrEmpty(userId))
+            { 
+                return BadRequest("User not found!");
             }
-            return Ok(response);
+
+            var command = new GetOrganizerEventsQuery(new Guid(userId));
+
+            var getEventsResult = await _mediator.Send(command);
+
+            return getEventsResult.Match(
+                getEventResult => Ok(getEventResult),
+                errors => Problem(errors));
+        }
+
+        [HttpDelete("deleteEvent")]
+        public async Task<IActionResult> DeleteEvent(DeleteEventRequestModel request)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (String.IsNullOrEmpty(userId))
+            {
+                return BadRequest("User not found!");
+            }
+
+            var command = _mapper.Map<DeleteEventCommand>((new Guid(userId), request));
+
+            var result = await _mediator.Send(command); 
+
+            return result.Match(
+                result => Ok(result),
+                errors => Problem(errors));
         }
     }
 }
