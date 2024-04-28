@@ -6,7 +6,7 @@
         DateTime StartDateTime,
         DateTime EndDateTime,
         List<SubEventRequest> SubEvents,
-        AddressRequest? AddressRequess,
+        AddressRequest? AddressRequest,
         string? Link);
 
     public record SubEventRequest(

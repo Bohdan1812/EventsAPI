@@ -1,19 +1,26 @@
 ﻿using FluentValidation;
 
-namespace Application.Events.Commands.Create
+namespace Application.Events.Commands.Update
 {
-    public class CreateEventCommandValidator : AbstractValidator<CreateEventCommand>
+    public class UpdateEventCommandValidator : AbstractValidator<UpdateEventCommand>
     {
-        public CreateEventCommandValidator()
+        public UpdateEventCommandValidator() 
         {
             SetEventRules();
             SetEventAddressRules();
             SetEventLinkRules();
-            SetSubEventRules();
         }
 
         private void SetEventRules()
         {
+            RuleFor(c => c.EventId)
+                .NotEmpty()
+                .WithMessage("Event id is required!");
+
+            RuleFor(e => e.ApplicationUserId)
+                .NotEmpty()
+                .WithMessage("ApplicationUser Id is required!");
+
             RuleFor(e => e.Name)
                     .NotEmpty()
                     .WithMessage("Event name is required!");
@@ -27,10 +34,6 @@ namespace Application.Events.Commands.Create
                 .WithMessage("Event end datetime is required!")
                 .GreaterThan(e => e.StartDateTime)
                 .WithMessage("Event's end datetime must be greater then start datetime!");
-
-            RuleFor(e => e.appUserId)
-                .NotEmpty()
-                .WithMessage("ApplicationUser Id is required!");
         }
         private void SetEventAddressRules()
         {
@@ -69,18 +72,5 @@ namespace Application.Events.Commands.Create
                 });
                 
         }
-        private void SetSubEventRules()
-        {
-            RuleForEach(e => e.SubEvents)
-            .Must((dto, subEvent) =>
-            {
-                return subEvent.StartDateTime >= dto.StartDateTime
-                       && subEvent.EndDateTime <= dto.EndDateTime;
-            })
-            .When(e => e.SubEvents is not null)
-            .WithMessage("SubEvent DateTime Start must be greater or equal than " +
-            "Event StartDateTime and SubEvent endDateTime less than Event DateTime End.");
-        }
     }
 }
-

@@ -1,5 +1,6 @@
 ﻿using Application.Persistence.Repositories;
 using Domain.EventAggregate;
+using Domain.EventAggregate.Entities;
 using Domain.EventAggregate.ValueObjects;
 using Domain.OrganizerAggregate.ValueObjects;
 using Microsoft.EntityFrameworkCore;
@@ -43,12 +44,58 @@ namespace Infrastructure.Persistence.Repositories
             }
         }
 
-        public async Task Update(Event @event)
+        public async Task Update(Event updatedEvent)
         {
-            _dbContext.Update(@event);
-            await _dbContext.SaveChangesAsync();
+            var existingEvent = await _dbContext.Events.FirstOrDefaultAsync(e => e.Id == updatedEvent.Id);
+
+            if (existingEvent is not null)
+            {
+                existingEvent.Update(
+                    updatedEvent.Name, 
+                    updatedEvent.Description,
+                    updatedEvent.StartDateTime,
+                    updatedEvent.EndDateTime,
+                    updatedEvent.Address,
+                    updatedEvent.Link);
+
+                await _dbContext.SaveChangesAsync();
+            }
+        }
+        /*
+        public async Task UpdateSubEvent(EventId eventId, SubEvent subEvent)
+        {
+            var updatedEvent = await _dbContext.Events.FirstOrDefaultAsync(e => e.Id == eventId);
+
+            if (updatedEvent is not null)
+            {
+                updatedEvent.UpdateSubEvent(subEvent);
+
+                await _dbContext.SaveChangesAsync();
+            }
         }
 
+        public async Task AddSubEvent(EventId eventId, SubEvent subEvent)
+        {
+            var updatedEvent = await _dbContext.Events.FirstOrDefaultAsync(e => e.Id == eventId);
 
+            if (updatedEvent is not null)
+            {
+                updatedEvent.AddSubEvent(subEvent);
+                await _dbContext.SaveChangesAsync();
+            }
+
+        }
+
+        public async Task RemoveSubEvent(EventId eventId, SubEventId subEventId)
+        {
+            var updatedEvent = await _dbContext.Events.FirstOrDefaultAsync(e => e.Id == eventId);
+
+            if (updatedEvent is not null)
+            {
+                updatedEvent.RemoveSubEvent(subEventId);
+                await _dbContext.SaveChangesAsync();
+            }
+        }
+        */
     }
 }

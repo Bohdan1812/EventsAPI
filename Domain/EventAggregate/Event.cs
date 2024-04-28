@@ -28,7 +28,7 @@ namespace Domain.EventAggregate
 
         public string Name { get; private set; } = null!;
 
-        public string Description { get; private set; }
+        public string? Description { get; private set; }
 
         public OrganizerId OrganizerId { get; private set; }
 
@@ -103,7 +103,12 @@ namespace Domain.EventAggregate
                     newSubEvent.EndDateTime > EndDateTime)
                 throw new EventTimeViolationException();
 
+            if (_subEvents.Exists(s => s.Id == newSubEvent.Id))
+                throw new SubEventAlreadyExistsException();
+
             _subEvents.Add(newSubEvent);
+
+            UpdatedDateTime = DateTime.UtcNow;
         }
 
         public void RemoveSubEvent(SubEventId subEventId)
@@ -116,6 +121,46 @@ namespace Domain.EventAggregate
             }
 
             _subEvents.Remove(deletedSubEvent);
+
+            UpdatedDateTime = DateTime.UtcNow;
+        }
+
+        public void UpdateSubEvent(SubEvent subEvent)
+        {
+            var updatedSubEvent = SubEvents.FirstOrDefault(se => se.Id == subEvent.Id);
+
+            if (updatedSubEvent is null)
+            {
+                throw new SubEventNotFoundException();
+            }
+
+            if (updatedSubEvent.StartDateTime < StartDateTime ||
+                updatedSubEvent.EndDateTime > EndDateTime)
+            {
+                throw new EventTimeViolationException();
+            }
+
+            _subEvents.Remove(updatedSubEvent);
+            _subEvents.Add(subEvent);
+
+            UpdatedDateTime = DateTime.UtcNow;
+        }
+
+        public void Update(
+            string name,
+            string? description,
+            DateTime startDateTime,
+            DateTime endDateTime,
+            Address? address,
+            Link? link)
+        {
+            Name = name;
+            Description = description;
+            StartDateTime = startDateTime;
+            EndDateTime = endDateTime;
+            Address = address;
+            Link = link;
+            UpdatedDateTime = DateTime.UtcNow;
         }
 
         public void AddParticipationId(ParticipationId participationId)
@@ -126,6 +171,7 @@ namespace Domain.EventAggregate
             }
 
             _participationIds.Add(participationId);*/
+            UpdatedDateTime = DateTime.UtcNow;
         }
 
         public void RemoveParticipationId(ParticipationId participationId)
@@ -138,6 +184,7 @@ namespace Domain.EventAggregate
 
             _participationIds.Remove(participationId);
             */
+            UpdatedDateTime = DateTime.UtcNow;
         }
     }
 }

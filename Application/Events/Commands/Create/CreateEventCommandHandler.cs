@@ -27,6 +27,13 @@ namespace Application.Events.Commands.Create
                 return OrganizerError.OrganizerNotFound;
             }
 
+            string description = "";
+
+            if(request.Description is not null) 
+            {
+                description = request.Description;
+            }
+
             Address? address = null;
 
             if (request.Address is not null)
@@ -53,7 +60,7 @@ namespace Application.Events.Commands.Create
                 newEvent = new Event(
                 EventId.CreateUnique(),
                 request.Name,
-                request.Description,
+                description,
                 organizer.Id,
                 request.StartDateTime,
                 request.EndDateTime,

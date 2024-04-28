@@ -19,6 +19,7 @@ namespace Domain.EventAggregate.Entities
         public DateTime StartDateTime { get; private set; }
 
         private DateTime _endDateTime;
+
         public DateTime EndDateTime
         {
             get
@@ -37,6 +38,18 @@ namespace Domain.EventAggregate.Entities
 
         public SubEvent(SubEventId subEventId, string name, string? description, DateTime startDateTime, DateTime endDateTime)
             : base(subEventId)
+        {
+            Name = name;
+            Description = description;
+            StartDateTime = startDateTime;
+            EndDateTime = endDateTime;
+        }
+
+        public void Update(
+            string name,
+            string description,
+            DateTime startDateTime,
+            DateTime endDateTime) 
         {
             Name = name;
             Description = description;
