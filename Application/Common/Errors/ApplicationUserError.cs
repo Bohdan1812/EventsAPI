@@ -19,9 +19,5 @@ namespace Application.Common.Errors
         public static Error ApplicationUserNotDeleted(string code, string description) => Error.Failure(
           code: code,
           description: description);
-
-
-
-
     }
 }

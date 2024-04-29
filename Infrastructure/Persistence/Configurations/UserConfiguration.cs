@@ -23,6 +23,11 @@ namespace Infrastructure.Persistence.Configurations
                 .WithOne(a => a.User)
                 .HasForeignKey<User>(u => u.ApplicationUserId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasMany(u => u.JoinRequests)
+                .WithOne(j => j.User)
+                .HasForeignKey(j => j.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
                 
         }
     }

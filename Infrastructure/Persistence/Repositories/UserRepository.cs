@@ -20,12 +20,16 @@ namespace Infrastructure.Persistence.Repositories
 
         public async Task<User?> GetUser(UserId userId)
         {
-            return await _dbContext.FindAsync<User>(userId);
+            return await _dbContext.DomainUsers
+                .Include(u => u.JoinRequests)
+                .FirstOrDefaultAsync(u => u.Id == userId);
         }
 
         public async Task<User?> GetUser(Guid appUserId)
         {
-            return await _dbContext.DomainUsers.Where(u => u.ApplicationUserId == appUserId).FirstOrDefaultAsync();
+            return await _dbContext.DomainUsers
+                .Include(u => u.JoinRequests)
+                .FirstOrDefaultAsync(u => u.ApplicationUserId == appUserId);
         }
 
 

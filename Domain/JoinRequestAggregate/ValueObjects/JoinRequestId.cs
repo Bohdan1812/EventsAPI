@@ -1,17 +1,17 @@
 ﻿using Domain.Common.Models;
 
-namespace Domain.ParticipationRequestAggregate.ValueObjects
+namespace Domain.JoinRequestAggregate.ValueObjects
 {
-    public sealed class ParticipationRequestId : ValueObject
+    public sealed class JoinRequestId : ValueObject
     {
         public Guid Value { get; }
 
-        private ParticipationRequestId(Guid value)
+        private JoinRequestId(Guid value)
         {
             Value = value;
         }
 
-        public static ParticipationRequestId CreateUnique()
+        public static JoinRequestId CreateUnique()
         {
             return new(Guid.NewGuid());
         }
@@ -19,6 +19,11 @@ namespace Domain.ParticipationRequestAggregate.ValueObjects
         public override IEnumerable<object> GetEqualityComponents()
         {
             yield return Value;
+        }
+
+        public static JoinRequestId Create(Guid value) 
+        {
+            return new(value);
         }
     }
 }

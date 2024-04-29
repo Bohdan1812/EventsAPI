@@ -13,6 +13,7 @@ namespace Infrastructure.Persistence.Configurations
         {
             ConfigureEventsTable(builder);
             ConfigureSubEvents(builder);
+            ConfigureJoinRequests(builder);
         }
 
         private void ConfigureEventsTable(EntityTypeBuilder<Event> builder)
@@ -73,6 +74,14 @@ namespace Infrastructure.Persistence.Configurations
 
             builder.Metadata.FindNavigation(nameof(Event.SubEvents))!
                 .SetPropertyAccessMode(PropertyAccessMode.Field);
+        }
+
+        private void ConfigureJoinRequests(EntityTypeBuilder<Event> builder)
+        {
+            builder.HasMany(e => e.JoinRequests)
+                .WithOne(j => j.Event)
+                .HasForeignKey(j => j.EventId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

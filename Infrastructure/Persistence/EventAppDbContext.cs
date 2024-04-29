@@ -1,5 +1,6 @@
 ﻿using Domain.Common.Models;
 using Domain.EventAggregate;
+using Domain.JoinRequestAggregate;
 using Domain.OrganizerAggregate;
 using Domain.UserAggregate;
 using Microsoft.AspNetCore.Identity;
@@ -24,6 +25,7 @@ namespace Infrastructure.Persistence
         public DbSet<User> DomainUsers { get; set; }
         public DbSet<Organizer> Organizers { get; set; }
         public DbSet<Event> Events { get; set; }
+        public DbSet<JoinRequest> JoinRequests { get; set; }
 
         
     }

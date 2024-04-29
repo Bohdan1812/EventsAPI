@@ -22,9 +22,7 @@ namespace Api.Controllers
     public class EventController : ApiController
     {
         private readonly ISender _mediator;
-
         private readonly IMapper _mapper;
-
         private readonly UserManager<ApplicationUser> _userManager;
 
 

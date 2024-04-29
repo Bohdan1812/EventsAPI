@@ -2,10 +2,10 @@
 using Domain.EventAggregate.Entities;
 using Domain.EventAggregate.Exceptions;
 using Domain.EventAggregate.ValueObjects;
-using Domain.InviteAggregate.ValueObjects;
+using Domain.JoinRequestAggregate;
+using Domain.JoinRequestAggregate.ValueObjects;
 using Domain.OrganizerAggregate.ValueObjects;
 using Domain.ParticipationAggregate.ValueObjects;
-using Domain.ParticipationRequestAggregate.ValueObjects;
 
 namespace Domain.EventAggregate
 {
@@ -20,7 +20,7 @@ namespace Domain.EventAggregate
 
         //private readonly List<ParticipationId> _participationIds = new List<ParticipationId>();
 
-        //private readonly List<ParticipationRequestId> _participationRequestIds = new List<ParticipationRequestId>();
+        private readonly List<JoinRequest> _joinRequests = new List<JoinRequest>();
 
         //private readonly List<InviteId> _inviteIds = new List<InviteId>();
 
@@ -34,7 +34,7 @@ namespace Domain.EventAggregate
 
         //public IReadOnlyList<ParticipationId> ParticipationIds => _participationIds.AsReadOnly();
 
-        //public IReadOnlyList<ParticipationRequestId> ParticipationRequestIds => _participationRequestIds.AsReadOnly();
+        public IReadOnlyList<JoinRequest> JoinRequests => _joinRequests.AsReadOnly();
 
         //public IReadOnlyList<InviteId> InviteIds => _inviteIds.AsReadOnly();
 
@@ -186,5 +186,7 @@ namespace Domain.EventAggregate
             */
             UpdatedDateTime = DateTime.UtcNow;
         }
+
+        
     }
 }

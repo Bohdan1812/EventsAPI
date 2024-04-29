@@ -1,6 +1,5 @@
 ﻿using Application.Persistence.Repositories;
 using Domain.EventAggregate;
-using Domain.EventAggregate.Entities;
 using Domain.EventAggregate.ValueObjects;
 using Domain.OrganizerAggregate.ValueObjects;
 using Microsoft.EntityFrameworkCore;
