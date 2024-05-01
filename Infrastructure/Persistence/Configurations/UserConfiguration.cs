@@ -10,6 +10,14 @@ namespace Infrastructure.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<User> builder)
         {
+            ConfigureUserTable(builder);
+            ConnfigureApplicationUser(builder);
+            ConfigureJoinRequests(builder);
+            ConfigureInvites(builder);
+        }
+
+        private void ConfigureUserTable(EntityTypeBuilder<User> builder)
+        {
             builder.ToTable("Users");
 
             builder.HasKey(x => x.Id);
@@ -18,18 +26,32 @@ namespace Infrastructure.Persistence.Configurations
                 .HasConversion(
                     id => id.Value,
                     value => UserId.Create(value));
+        }
 
+        private void ConfigureJoinRequests(EntityTypeBuilder<User> builder)
+        {
+            builder.HasMany(u => u.JoinRequests)
+                            .WithOne(j => j.User)
+                            .HasForeignKey(j => j.UserId)
+                            .OnDelete(DeleteBehavior.Cascade);
+        }
+        private void ConfigureInvites(EntityTypeBuilder<User> builder)
+        {
+            builder.HasMany(u => u.Invites)
+                            .WithOne(j => j.User)
+                            .HasForeignKey(j => j.UserId)
+                            .OnDelete(DeleteBehavior.Cascade);
+        }
+
+        private void ConnfigureApplicationUser(EntityTypeBuilder<User> builder)
+        {
             builder.HasOne(u => u.ApplicationUser)
                 .WithOne(a => a.User)
                 .HasForeignKey<User>(u => u.ApplicationUserId)
                 .OnDelete(DeleteBehavior.Cascade);
-
-            builder.HasMany(u => u.JoinRequests)
-                .WithOne(j => j.User)
-                .HasForeignKey(j => j.UserId)
-                .OnDelete(DeleteBehavior.Cascade);
-                
         }
+
+
     }
     
 }

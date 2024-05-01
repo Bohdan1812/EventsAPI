@@ -51,7 +51,7 @@ namespace Application.JoinRequests.Commands.Add
                 return JoinRequestError.JoinRequestNotInitialized(ex.Message);
             }
 
-            var joinRequest = await _joinRequestRepository.GetJoinRequest(joinRequestId);
+            var joinRequest = await _joinRequestRepository.GetFullJoinRequest(joinRequestId);
 
             if (joinRequest is not null &&
                 joinRequest.Id == joinRequestId &&

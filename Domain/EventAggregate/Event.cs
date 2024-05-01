@@ -2,6 +2,7 @@
 using Domain.EventAggregate.Entities;
 using Domain.EventAggregate.Exceptions;
 using Domain.EventAggregate.ValueObjects;
+using Domain.InviteAggregate;
 using Domain.JoinRequestAggregate;
 using Domain.JoinRequestAggregate.ValueObjects;
 using Domain.OrganizerAggregate.ValueObjects;
@@ -22,7 +23,7 @@ namespace Domain.EventAggregate
 
         private readonly List<JoinRequest> _joinRequests = new List<JoinRequest>();
 
-        //private readonly List<InviteId> _inviteIds = new List<InviteId>();
+        private readonly List<Invite> _invites = new List<Invite>();
 
         private readonly List<SubEvent> _subEvents = new List<SubEvent>();
 
@@ -36,7 +37,7 @@ namespace Domain.EventAggregate
 
         public IReadOnlyList<JoinRequest> JoinRequests => _joinRequests.AsReadOnly();
 
-        //public IReadOnlyList<InviteId> InviteIds => _inviteIds.AsReadOnly();
+        public IReadOnlyList<Invite> Invites => _invites.AsReadOnly();
 
         public IReadOnlyList<SubEvent> SubEvents => _subEvents.AsReadOnly();
 

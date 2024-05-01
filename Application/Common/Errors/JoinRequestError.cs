@@ -14,6 +14,10 @@ namespace Application.Common.Errors
         public static Error JoinRequestNotAdded => Error.Failure(
             code: "JoinRequest.NotAdded",
             description: "Unexpected error occured. This join request was not added to database!");
+  
+        public static Error JoinRequestNotRemoved => Error.Failure(
+           code: "JoinRequest.NotRemoved",
+           description: "Unexpected error occured. This join request was not removed to database!");
 
         public static Error JoinRequestNoPermission => Error.Validation(
             code: "JoinRequest.NoPermission",

@@ -1,6 +1,10 @@
 ﻿using Domain.Common.Models;
+using Domain.EventAggregate;
 using Domain.EventAggregate.ValueObjects;
+using Domain.InviteAggregate.Exceptions;
 using Domain.InviteAggregate.ValueObjects;
+using Domain.OrganizerAggregate.ValueObjects;
+using Domain.UserAggregate;
 using Domain.UserAggregate.ValueObjects;
 
 namespace Domain.InviteAggregate
@@ -9,13 +13,31 @@ namespace Domain.InviteAggregate
     {
         public UserId UserId { get; } = null!;
 
+        public User User { get; } = null!;
+
         public EventId EventId { get; } = null!;
 
-        public Invite(InviteId inviteId, UserId userId, EventId eventId)
+        public Event Event { get; } = null!;
+
+        public Invite(
+            InviteId inviteId,
+            OrganizerId organizerId,
+            User user, 
+            Event @event)
             :base(inviteId)
         {
-            UserId = userId;
-            EventId = eventId;
+            if (@event.OrganizerId != organizerId)
+                throw new InviteNoPersmissionException();
+
+            if (@event.Invites.
+                FirstOrDefault(i => i.UserId == user.Id) is not null)
+
+            if (user.JoinRequests
+                .FirstOrDefault(j => j.EventId == @event.Id) is not null)
+                throw new JoinRequestExistException();
+
+            User = user;
+            Event = @event;
         }
     }
 }

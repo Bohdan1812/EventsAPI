@@ -1,5 +1,6 @@
 ﻿using Domain.Common.Models;
 using Domain.EventAggregate;
+using Domain.InviteAggregate;
 using Domain.JoinRequestAggregate;
 using Domain.OrganizerAggregate;
 using Domain.UserAggregate;
@@ -26,6 +27,7 @@ namespace Infrastructure.Persistence
         public DbSet<Organizer> Organizers { get; set; }
         public DbSet<Event> Events { get; set; }
         public DbSet<JoinRequest> JoinRequests { get; set; }
+        public DbSet<Invite> Invites { get; set; }
 
         
     }

@@ -9,7 +9,8 @@ namespace Application.Persistence.Repositories
     {
         Task Add(JoinRequest joinRequest);
         Task Remove(JoinRequestId joinRequestId);
-        Task<JoinRequest?> GetJoinRequest(JoinRequestId joinRequestId);
+        Task<JoinRequest?> GetFullJoinRequest(JoinRequestId joinRequestId);
+        Task<JoinRequest?> GetJoinRequest(JoinRequestId joinRequestId); 
         Task<List<JoinRequest>> GetJoinRequestsByUser(UserId userId); 
         Task<List<JoinRequest>> GetJoinRequestsByEvent(EventId eventId);
     }

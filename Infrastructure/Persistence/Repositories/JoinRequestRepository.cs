@@ -23,7 +23,7 @@ namespace Infrastructure.Persistence.Repositories
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task<JoinRequest?> GetJoinRequest(JoinRequestId joinRequestId)
+        public async Task<JoinRequest?> GetFullJoinRequest(JoinRequestId joinRequestId)
         {
             return await _dbContext.JoinRequests
                 .Include(jr => jr.User)
@@ -31,21 +31,18 @@ namespace Infrastructure.Persistence.Repositories
                 .FirstOrDefaultAsync(jr => jr.Id == joinRequestId);
         }
 
-        public async Task<List<JoinRequest>?> GetJoinRequestByUser(UserId userId)
+        public async Task<List<JoinRequest>> GetJoinRequestsByUser(UserId userId)
         {
             return await _dbContext.JoinRequests
-                .Include(jr => jr.User)
-                .Include(jr => jr.Event)
                 .Where(jr => jr.UserId == userId).ToListAsync();
         }
 
-        public async Task<List<JoinRequest>?> GetJoinRequestsByEvent(EventId eventId)
+        public async Task<List<JoinRequest>> GetJoinRequestsByEvent(EventId eventId)
         {
             return await _dbContext.JoinRequests
-                .Include(jr => jr.User)
-                .Include(jr => jr.Event)
                 .Where(jr => jr.EventId == eventId).ToListAsync();
         }
+
 
         public async Task Remove(JoinRequestId joinRequestId)
         {
@@ -57,6 +54,11 @@ namespace Infrastructure.Persistence.Repositories
                 _dbContext.Remove(joinRequest);
                 await _dbContext.SaveChangesAsync();
             }
+        }
+
+        public async Task<JoinRequest?> GetJoinRequest(JoinRequestId joinRequestId)
+        {
+            return await _dbContext.JoinRequests.FindAsync(joinRequestId);
         }
     }
 }

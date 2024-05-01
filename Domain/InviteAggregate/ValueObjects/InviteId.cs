@@ -15,6 +15,10 @@ namespace Domain.InviteAggregate.ValueObjects
         {
             return new(Guid.NewGuid());
         }
+        public static InviteId Create(Guid value)
+        {
+            return new(value);
+        }
 
         public override IEnumerable<object> GetEqualityComponents()
         {

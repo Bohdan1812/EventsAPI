@@ -1,4 +1,5 @@
 ﻿using Domain.Common.Models;
+using Domain.InviteAggregate;
 using Domain.JoinRequestAggregate;
 using Domain.UserAggregate.ValueObjects;
 
@@ -21,9 +22,13 @@ namespace Domain.UserAggregate
         public Guid ApplicationUserId { get; set; } 
         public ApplicationUser ApplicationUser { get; set; }
 
-        private List<JoinRequest> _joinRequests = new List<JoinRequest>();
+        private readonly List<Invite> _invites = new List<Invite>();
+        public IReadOnlyList<Invite> Invites => _invites.AsReadOnly();
 
+        private List<JoinRequest> _joinRequests = new List<JoinRequest>();
         public IReadOnlyList<JoinRequest> JoinRequests => _joinRequests.AsReadOnly();
+
+
 
         public User(
             UserId userId,

@@ -14,6 +14,7 @@ namespace Infrastructure.Persistence.Configurations
             ConfigureEventsTable(builder);
             ConfigureSubEvents(builder);
             ConfigureJoinRequests(builder);
+            ConfigureInvites(builder);
         }
 
         private void ConfigureEventsTable(EntityTypeBuilder<Event> builder)
@@ -53,7 +54,6 @@ namespace Infrastructure.Persistence.Configurations
                     .HasColumnName("House");
             });
         }
-
         private void ConfigureSubEvents(EntityTypeBuilder<Event> builder)
         {
             builder.OwnsMany(m => m.SubEvents, se =>
@@ -75,12 +75,18 @@ namespace Infrastructure.Persistence.Configurations
             builder.Metadata.FindNavigation(nameof(Event.SubEvents))!
                 .SetPropertyAccessMode(PropertyAccessMode.Field);
         }
-
         private void ConfigureJoinRequests(EntityTypeBuilder<Event> builder)
         {
             builder.HasMany(e => e.JoinRequests)
                 .WithOne(j => j.Event)
                 .HasForeignKey(j => j.EventId)
+                .OnDelete(DeleteBehavior.Cascade);
+        }
+        private void ConfigureInvites(EntityTypeBuilder<Event> builder)
+        {
+            builder.HasMany(e => e.Invites)
+                .WithOne(i => i.Event)
+                .HasForeignKey(i => i.EventId)
                 .OnDelete(DeleteBehavior.Cascade);
         }
     }
