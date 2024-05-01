@@ -11,6 +11,12 @@ namespace Domain.InviteAggregate
 {
     public sealed class Invite : AggregateRoot<InviteId>
     {
+#pragma warning disable CS8618
+        private Invite()
+        {
+
+        }
+#pragma warning restore CS8618
         public UserId UserId { get; } = null!;
 
         public User User { get; } = null!;
