@@ -3,7 +3,9 @@ using Domain.EventAggregate;
 using Domain.EventAggregate.ValueObjects;
 using Domain.InviteAggregate.Exceptions;
 using Domain.InviteAggregate.ValueObjects;
+using Domain.JoinRequestAggregate.Exceptions;
 using Domain.OrganizerAggregate.ValueObjects;
+using Domain.ParticipationAggregate.Exceptions;
 using Domain.UserAggregate;
 using Domain.UserAggregate.ValueObjects;
 
@@ -35,8 +37,14 @@ namespace Domain.InviteAggregate
             if (@event.OrganizerId != organizerId)
                 throw new InviteNoPersmissionException();
 
+            if (@event.Participations
+                .FirstOrDefault(p => p.UserId == user.Id &&
+                    p.EventId == @event.Id) is not null)
+                throw new ParticipationExistException();
+
             if (@event.Invites.
                 FirstOrDefault(i => i.UserId == user.Id) is not null)
+                throw new InviteExistException();
 
             if (user.JoinRequests
                 .FirstOrDefault(j => j.EventId == @event.Id) is not null)

@@ -3,6 +3,7 @@ using Application.Persistence.Repositories;
 using Domain.EventAggregate;
 using Domain.EventAggregate.Entities;
 using Domain.EventAggregate.ValueObjects;
+using Domain.ParticipationAggregate;
 using ErrorOr;
 using MediatR;
 
@@ -12,11 +13,19 @@ namespace Application.Events.Commands.Create
     {
         private readonly IEventRepository _eventRepository;
         private readonly IOrganizerRepository _organizerRepository;
+        private readonly IUserRepository _userRepository;
+        private readonly IParticipationRepository _participationRepository;
 
-        public CreateEventCommandHandler(IEventRepository eventRepository, IOrganizerRepository organizerRepository)
+        public CreateEventCommandHandler(
+            IEventRepository eventRepository,
+            IOrganizerRepository organizerRepository,
+            IParticipationRepository participationRepository,
+            IUserRepository userRepository)
         {
             _eventRepository = eventRepository;
             _organizerRepository = organizerRepository;
+            _participationRepository = participationRepository;
+            _userRepository = userRepository;
         }
 
         public async Task<ErrorOr<string>> Handle(CreateEventCommand request, CancellationToken cancellationToken)
@@ -79,9 +88,28 @@ namespace Application.Events.Commands.Create
                 return EventError.EventNotInitialized(ex.Message);
             }
 
-            if (newEvent is not null)
+            Participation? participation = null;
+
+            var user = await _userRepository.GetUser(organizer.UserId);
+
+            if (user is null)
+                return UserError.UserNotFound;
+
+            try
+            {
+                participation = new Participation(organizer, user, newEvent);
+            }
+            catch (Exception ex)
+            {
+                return ParticipationError.ParticipationNotInitialized(ex.Message);
+            }
+
+            if (newEvent is not null &&
+                participation is not null)
             {
                 await _eventRepository.Add(newEvent);
+                await _participationRepository.Add(participation);
+
                 return "Event created Successfully!";
             }
 

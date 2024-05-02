@@ -176,6 +176,26 @@ namespace Infrastructure.Migrations
                     b.ToTable("Organizers", (string)null);
                 });
 
+            modelBuilder.Entity("Domain.ParticipationAggregate.Participation", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("EventId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EventId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Participations", (string)null);
+                });
+
             modelBuilder.Entity("Domain.UserAggregate.User", b =>
                 {
                     b.Property<Guid>("Id")
@@ -482,6 +502,25 @@ namespace Infrastructure.Migrations
                     b.Navigation("EventIds");
                 });
 
+            modelBuilder.Entity("Domain.ParticipationAggregate.Participation", b =>
+                {
+                    b.HasOne("Domain.EventAggregate.Event", "Event")
+                        .WithMany("Participations")
+                        .HasForeignKey("EventId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.UserAggregate.User", "User")
+                        .WithMany("Participations")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Event");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Domain.UserAggregate.User", b =>
                 {
                     b.HasOne("Domain.Common.Models.ApplicationUser", "ApplicationUser")
@@ -554,6 +593,8 @@ namespace Infrastructure.Migrations
                     b.Navigation("Invites");
 
                     b.Navigation("JoinRequests");
+
+                    b.Navigation("Participations");
                 });
 
             modelBuilder.Entity("Domain.UserAggregate.User", b =>
@@ -561,6 +602,8 @@ namespace Infrastructure.Migrations
                     b.Navigation("Invites");
 
                     b.Navigation("JoinRequests");
+
+                    b.Navigation("Participations");
                 });
 #pragma warning restore 612, 618
         }

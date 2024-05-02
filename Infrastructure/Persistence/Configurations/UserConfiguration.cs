@@ -5,15 +5,16 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infrastructure.Persistence.Configurations
 {
-    
+
     public class UserConfiguration : IEntityTypeConfiguration<User>
     {
         public void Configure(EntityTypeBuilder<User> builder)
         {
             ConfigureUserTable(builder);
-            ConnfigureApplicationUser(builder);
+            ConfigureApplicationUser(builder);
             ConfigureJoinRequests(builder);
             ConfigureInvites(builder);
+            ConfigureParticipations(builder);
         }
 
         private void ConfigureUserTable(EntityTypeBuilder<User> builder)
@@ -43,7 +44,15 @@ namespace Infrastructure.Persistence.Configurations
                             .OnDelete(DeleteBehavior.Cascade);
         }
 
-        private void ConnfigureApplicationUser(EntityTypeBuilder<User> builder)
+        private void ConfigureParticipations(EntityTypeBuilder<User> builder)
+        {
+            builder.HasMany(u => u.Participations)
+                .WithOne(p => p.User)
+                .HasForeignKey(p => p.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+        }
+
+        private void ConfigureApplicationUser(EntityTypeBuilder<User> builder)
         {
             builder.HasOne(u => u.ApplicationUser)
                 .WithOne(a => a.User)

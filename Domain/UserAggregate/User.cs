@@ -1,6 +1,7 @@
 ﻿using Domain.Common.Models;
 using Domain.InviteAggregate;
 using Domain.JoinRequestAggregate;
+using Domain.ParticipationAggregate;
 using Domain.UserAggregate.ValueObjects;
 
 namespace Domain.UserAggregate
@@ -28,7 +29,8 @@ namespace Domain.UserAggregate
         private List<JoinRequest> _joinRequests = new List<JoinRequest>();
         public IReadOnlyList<JoinRequest> JoinRequests => _joinRequests.AsReadOnly();
 
-
+        private readonly List<Participation> _participations = new List<Participation>();
+        public IReadOnlyList<Participation> Participations => _participations.AsReadOnly();
 
         public User(
             UserId userId,

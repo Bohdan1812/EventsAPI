@@ -18,24 +18,29 @@ namespace Infrastructure.Persistence.Repositories
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task<User?> GetUser(UserId userId)
+        public async Task<User?> GetFullUser(UserId userId)
         {
             return await _dbContext.DomainUsers
                 .Include(u => u.JoinRequests)
+                .Include(u => u.Invites)
+                .FirstOrDefaultAsync(u => u.Id == userId);
+        }
+        public async Task<User?> GetUser(UserId userId)
+        {
+            return await _dbContext.DomainUsers
                 .FirstOrDefaultAsync(u => u.Id == userId);
         }
 
         public async Task<User?> GetUser(Guid appUserId)
         {
             return await _dbContext.DomainUsers
-                .Include(u => u.JoinRequests)
                 .FirstOrDefaultAsync(u => u.ApplicationUserId == appUserId);
         }
 
 
         public async Task Remove(UserId userId)
         {
-            User? user = await GetUser(userId);
+            User? user = await GetFullUser(userId);
             if (user is not null)
             {
                 var organizer = await _dbContext.Organizers.Where(o => o.UserId == userId)

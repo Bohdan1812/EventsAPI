@@ -7,6 +7,7 @@ namespace Application.Persistence.Repositories
     {
         Task<User?> GetUser(Guid appUserId);
         Task<User?> GetUser(UserId userId);
+        Task<User?> GetFullUser(UserId userId);
 
         Task Add(User user);
 

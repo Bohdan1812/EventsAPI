@@ -3,6 +3,7 @@ using Domain.EventAggregate;
 using Domain.InviteAggregate;
 using Domain.JoinRequestAggregate;
 using Domain.OrganizerAggregate;
+using Domain.ParticipationAggregate;
 using Domain.UserAggregate;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -28,6 +29,7 @@ namespace Infrastructure.Persistence
         public DbSet<Event> Events { get; set; }
         public DbSet<JoinRequest> JoinRequests { get; set; }
         public DbSet<Invite> Invites { get; set; }
+        public DbSet<Participation> Participations { get; set; }
 
         
     }

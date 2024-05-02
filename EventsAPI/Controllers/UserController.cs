@@ -16,9 +16,7 @@ namespace Api.Controllers
     public class UserController : ApiController
     {
         private readonly ISender _mediator;
-
         private readonly IMapper _mapper;
-
         private readonly UserManager<ApplicationUser> _userManager;
 
 

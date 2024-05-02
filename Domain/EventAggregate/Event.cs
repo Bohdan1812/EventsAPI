@@ -4,8 +4,8 @@ using Domain.EventAggregate.Exceptions;
 using Domain.EventAggregate.ValueObjects;
 using Domain.InviteAggregate;
 using Domain.JoinRequestAggregate;
-using Domain.JoinRequestAggregate.ValueObjects;
 using Domain.OrganizerAggregate.ValueObjects;
+using Domain.ParticipationAggregate;
 using Domain.ParticipationAggregate.ValueObjects;
 
 namespace Domain.EventAggregate
@@ -19,7 +19,7 @@ namespace Domain.EventAggregate
         }
 #pragma warning restore CS8618
 
-        //private readonly List<ParticipationId> _participationIds = new List<ParticipationId>();
+        private readonly List<Participation> _participations = new List<Participation>();
 
         private readonly List<JoinRequest> _joinRequests = new List<JoinRequest>();
 
@@ -33,7 +33,7 @@ namespace Domain.EventAggregate
 
         public OrganizerId OrganizerId { get; private set; }
 
-        //public IReadOnlyList<ParticipationId> ParticipationIds => _participationIds.AsReadOnly();
+        public IReadOnlyList<Participation> Participations => _participations.AsReadOnly();
 
         public IReadOnlyList<JoinRequest> JoinRequests => _joinRequests.AsReadOnly();
 

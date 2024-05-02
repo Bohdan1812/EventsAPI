@@ -36,6 +36,8 @@ namespace Infrastructure
             services.AddScoped<IOrganizerRepository, OrganizerRepository>();
             services.AddScoped<IEventRepository, EventRepository>();
             services.AddScoped<IJoinRequestRepository, JoinRequestRepository>();
+            services.AddScoped<IInviteRepository, InviteRepository>();
+            services.AddScoped<IParticipationRepository, ParticipationRepository>();
             
             return services;
         }

@@ -8,6 +8,7 @@ namespace Application.Persistence.Repositories
     public interface IEventRepository
     {
         Task<Event?> GetEvent(EventId eventId);
+        Task<Event?> GetFullEvent(EventId eventId);
         Task<List<Event>> GetOrganizerEvents(OrganizerId organizerId);
         Task Add(Event @event);
         Task Remove(EventId eventId);

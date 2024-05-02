@@ -15,6 +15,7 @@ namespace Infrastructure.Persistence.Configurations
             ConfigureSubEvents(builder);
             ConfigureJoinRequests(builder);
             ConfigureInvites(builder);
+            ConfigureParticipations(builder);
         }
 
         private void ConfigureEventsTable(EntityTypeBuilder<Event> builder)
@@ -87,6 +88,14 @@ namespace Infrastructure.Persistence.Configurations
             builder.HasMany(e => e.Invites)
                 .WithOne(i => i.Event)
                 .HasForeignKey(i => i.EventId)
+                .OnDelete(DeleteBehavior.Cascade);
+        }
+
+        private void ConfigureParticipations(EntityTypeBuilder<Event> builder)
+        {
+            builder.HasMany(e => e.Participations)
+                .WithOne(p => p.Event)
+                .HasForeignKey(p => p.EventId)
                 .OnDelete(DeleteBehavior.Cascade);
         }
     }

@@ -1,19 +1,15 @@
-﻿using Application.Events.Commands.Create;
-using Application.JoinRequests.Commands.Add;
+﻿using Application.JoinRequests.Commands.Add;
 using Application.JoinRequests.Commands.RemoveAsOrganizer;
 using Application.JoinRequests.Commands.RemoveOwn;
 using Application.JoinRequests.Queries.GetJoinRequest;
 using Application.JoinRequests.Queries.GetOrganizerJoinRequests;
 using Application.JoinRequests.Queries.GetOwnJoinRequests;
-using Azure.Core;
 using Contracts.JoinRequest;
-using Domain.Common.Models;
 using Domain.JoinRequestAggregate;
 using ErrorOr;
 using Mapster;
 using MapsterMapper;
 using MediatR;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
@@ -24,13 +20,11 @@ namespace Api.Controllers
     {
         private readonly ISender _mediator;
         private readonly IMapper _mapper;
-        private readonly UserManager<ApplicationUser> _userManager;
 
-        public JoinRequestController(IMapper mapper, ISender mediator, UserManager<ApplicationUser> userManager)
+        public JoinRequestController(IMapper mapper, ISender mediator)
         {
             _mapper = mapper;
             _mediator = mediator;
-            _userManager = userManager;
         }
 
         [HttpPut("addJoinRequest")]
@@ -90,7 +84,7 @@ namespace Api.Controllers
         }
 
         [HttpGet("getJoinRequest")]
-        public async Task<IActionResult> GetJoinRequest(Guid joinRequestId)
+        public async Task<IActionResult> GetJoinRequest([FromQuery]Guid joinRequestId)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -100,7 +94,7 @@ namespace Api.Controllers
             }
 
             var command = _mapper.Map<GetJoinRequestQuery>((new Guid(userId), joinRequestId));
-            ErrorOr<JoinRequest?> getJoinRequestResult = await _mediator.Send(command);
+            ErrorOr<JoinRequest> getJoinRequestResult = await _mediator.Send(command);
 
             return getJoinRequestResult.Match(
                 getJoinRequestResult => Ok(_mapper.Map<JoinRequestResponse>(getJoinRequestResult)),

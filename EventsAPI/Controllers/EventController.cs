@@ -23,14 +23,12 @@ namespace Api.Controllers
     {
         private readonly ISender _mediator;
         private readonly IMapper _mapper;
-        private readonly UserManager<ApplicationUser> _userManager;
 
 
-        public EventController(IMapper mapper, ISender mediator, UserManager<ApplicationUser> userManager)
+        public EventController(IMapper mapper, ISender mediator)
         {
             _mapper = mapper;
             _mediator = mediator;
-            _userManager = userManager;
         }
 
         [HttpPut("createEvent")]

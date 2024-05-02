@@ -26,6 +26,14 @@ namespace Infrastructure.Persistence.Repositories
             return await _dbContext.Events.FindAsync(eventId);
         }
 
+        public async Task<Event?> GetFullEvent(EventId eventId)
+        {
+            return await _dbContext.Events
+                .Include(e => e.Invites)
+                .Include(e => e.JoinRequests)
+                .FirstOrDefaultAsync(e => e.Id == eventId);
+        }
+
         public async Task<List<Event>> GetOrganizerEvents(OrganizerId organizerId)
         {
 
@@ -60,41 +68,5 @@ namespace Infrastructure.Persistence.Repositories
                 await _dbContext.SaveChangesAsync();
             }
         }
-        /*
-        public async Task UpdateSubEvent(EventId eventId, SubEvent subEvent)
-        {
-            var updatedEvent = await _dbContext.Events.FirstOrDefaultAsync(e => e.Id == eventId);
-
-            if (updatedEvent is not null)
-            {
-                updatedEvent.UpdateSubEvent(subEvent);
-
-                await _dbContext.SaveChangesAsync();
-            }
-        }
-
-        public async Task AddSubEvent(EventId eventId, SubEvent subEvent)
-        {
-            var updatedEvent = await _dbContext.Events.FirstOrDefaultAsync(e => e.Id == eventId);
-
-            if (updatedEvent is not null)
-            {
-                updatedEvent.AddSubEvent(subEvent);
-                await _dbContext.SaveChangesAsync();
-            }
-
-        }
-
-        public async Task RemoveSubEvent(EventId eventId, SubEventId subEventId)
-        {
-            var updatedEvent = await _dbContext.Events.FirstOrDefaultAsync(e => e.Id == eventId);
-
-            if (updatedEvent is not null)
-            {
-                updatedEvent.RemoveSubEvent(subEventId);
-                await _dbContext.SaveChangesAsync();
-            }
-        }
-        */
     }
 }
