@@ -38,6 +38,7 @@ namespace Infrastructure
             services.AddScoped<IJoinRequestRepository, JoinRequestRepository>();
             services.AddScoped<IInviteRepository, InviteRepository>();
             services.AddScoped<IParticipationRepository, ParticipationRepository>();
+            services.AddScoped<IChatRepository, ChatRepository>();  
             
             return services;
         }

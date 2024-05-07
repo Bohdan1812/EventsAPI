@@ -1,4 +1,5 @@
-﻿using Domain.ChatAggregate.ValueObjects;
+﻿using Domain.ChatAggregate.Exceptions;
+using Domain.ChatAggregate.ValueObjects;
 using Domain.Common.Models;
 using Domain.ParticipationAggregate.ValueObjects;
 
@@ -6,6 +7,13 @@ namespace Domain.ChatAggregate.Entities
 {
     public class Message : Entity<MessageId>
     {
+#pragma warning disable CS8618
+        private Message()
+        {
+
+        }
+#pragma warning restore CS8618
+
         public ParticipationId Author { get; }
 
         public string Text { get; private set; } = null!;
@@ -14,34 +22,28 @@ namespace Domain.ChatAggregate.Entities
 
         public DateTime UpdatedDateTime { get; private set; }
 
-        public Message(MessageId messageId, ParticipationId participationId, string text)
-            : base(messageId)
-        { 
+        public Message(ParticipationId participationId, string text)
+            : base(MessageId.CreateUnique())
+        {
+            if (string.IsNullOrEmpty(text))
+                throw new TextIsEmptyException();
+
             Author = participationId;
             Text = text;
             CreatedDateTime = DateTime.UtcNow;
-            UpdatedDateTime = DateTime.UtcNow;   
+            UpdatedDateTime = DateTime.UtcNow;
         }
 
-        public void UpdateText(ParticipationId author, string text) 
+        public void UpdateText(ParticipationId author, string text)
         {
             if (author != Author)
-            {
-                throw new Exception("You are not author of this message!");
-            }
+                throw new MessageNoPermissionException();
 
-            if(text != string.Empty)
-            {
-                Text = text;
-                UpdatedDateTime = DateTime.UtcNow;
-            }
-            else
-            {
-                throw new Exception("The text of message must not be empty!");
-            }
-            
-            
+            if (string.IsNullOrEmpty(text))
+                throw new TextIsEmptyException();
+
+            Text = text;
+            UpdatedDateTime = DateTime.UtcNow;
         }
-       
     }
 }

@@ -1,4 +1,5 @@
-﻿using Domain.Common.Models;
+﻿using Domain.ChatAggregate;
+using Domain.Common.Models;
 using Domain.EventAggregate.Entities;
 using Domain.EventAggregate.Exceptions;
 using Domain.EventAggregate.ValueObjects;
@@ -6,7 +7,6 @@ using Domain.InviteAggregate;
 using Domain.JoinRequestAggregate;
 using Domain.OrganizerAggregate.ValueObjects;
 using Domain.ParticipationAggregate;
-using Domain.ParticipationAggregate.ValueObjects;
 
 namespace Domain.EventAggregate
 {
@@ -27,11 +27,15 @@ namespace Domain.EventAggregate
 
         private readonly List<SubEvent> _subEvents = new List<SubEvent>();
 
+        private DateTime _endDateTime;
+
         public string Name { get; private set; } = null!;
 
         public string? Description { get; private set; }
 
         public OrganizerId OrganizerId { get; private set; }
+
+        public Chat Chat { get; } = null!;
 
         public IReadOnlyList<Participation> Participations => _participations.AsReadOnly();
 
@@ -46,7 +50,6 @@ namespace Domain.EventAggregate
         public Link? Link { get; private set; }
 
         public DateTime StartDateTime { get; private set; }
-        private DateTime _endDateTime;
 
         public DateTime EndDateTime {
             get
@@ -94,6 +97,7 @@ namespace Domain.EventAggregate
             _subEvents = subEvents;
             Address = address;
             Link = link;
+            Chat = new Chat(this);
             CreatedDateTime = DateTime.UtcNow;
             UpdatedDateTime = DateTime.UtcNow;
         }
@@ -162,32 +166,6 @@ namespace Domain.EventAggregate
             Address = address;
             Link = link;
             UpdatedDateTime = DateTime.UtcNow;
-        }
-
-        public void AddParticipationId(ParticipationId participationId)
-        {
-            /*if (ParticipationIds.Contains(participationId))
-            {
-                throw new Exception("This particpation is already exist");
-            }
-
-            _participationIds.Add(participationId);*/
-            UpdatedDateTime = DateTime.UtcNow;
-        }
-
-        public void RemoveParticipationId(ParticipationId participationId)
-        {
-            /*
-            if (!ParticipationIds.Contains(participationId))
-            {
-                throw new Exception("This particpation is not exist");
-            }
-
-            _participationIds.Remove(participationId);
-            */
-            UpdatedDateTime = DateTime.UtcNow;
-        }
-
-        
+        }    
     }
 }

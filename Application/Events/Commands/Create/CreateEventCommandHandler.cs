@@ -15,17 +15,20 @@ namespace Application.Events.Commands.Create
         private readonly IOrganizerRepository _organizerRepository;
         private readonly IUserRepository _userRepository;
         private readonly IParticipationRepository _participationRepository;
+        private readonly IChatRepository _chatRepository;
 
         public CreateEventCommandHandler(
             IEventRepository eventRepository,
             IOrganizerRepository organizerRepository,
             IParticipationRepository participationRepository,
-            IUserRepository userRepository)
+            IUserRepository userRepository,
+            IChatRepository chatRepository)
         {
             _eventRepository = eventRepository;
             _organizerRepository = organizerRepository;
             _participationRepository = participationRepository;
             _userRepository = userRepository;
+            _chatRepository = chatRepository;
         }
 
         public async Task<ErrorOr<string>> Handle(CreateEventCommand request, CancellationToken cancellationToken)
@@ -103,6 +106,8 @@ namespace Application.Events.Commands.Create
             {
                 return ParticipationError.ParticipationNotInitialized(ex.Message);
             }
+
+            
 
             if (newEvent is not null &&
                 participation is not null)

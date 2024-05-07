@@ -1,4 +1,5 @@
-﻿using Domain.Common.Models;
+﻿using Domain.ChatAggregate;
+using Domain.Common.Models;
 using Domain.EventAggregate;
 using Domain.InviteAggregate;
 using Domain.JoinRequestAggregate;
@@ -30,6 +31,7 @@ namespace Infrastructure.Persistence
         public DbSet<JoinRequest> JoinRequests { get; set; }
         public DbSet<Invite> Invites { get; set; }
         public DbSet<Participation> Participations { get; set; }
+        public DbSet<Chat> Chats { get; set; }
 
         
     }

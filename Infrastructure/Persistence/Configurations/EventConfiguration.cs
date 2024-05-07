@@ -1,4 +1,6 @@
-﻿using Domain.EventAggregate;
+﻿using Domain.ChatAggregate;
+using Domain.ChatAggregate.ValueObjects;
+using Domain.EventAggregate;
 using Domain.EventAggregate.ValueObjects;
 using Domain.OrganizerAggregate;
 using Domain.OrganizerAggregate.ValueObjects;
@@ -16,6 +18,7 @@ namespace Infrastructure.Persistence.Configurations
             ConfigureJoinRequests(builder);
             ConfigureInvites(builder);
             ConfigureParticipations(builder);
+            ConfigureChat(builder);
         }
 
         private void ConfigureEventsTable(EntityTypeBuilder<Event> builder)
@@ -97,6 +100,13 @@ namespace Infrastructure.Persistence.Configurations
                 .WithOne(p => p.Event)
                 .HasForeignKey(p => p.EventId)
                 .OnDelete(DeleteBehavior.Cascade);
+        }
+
+        public void ConfigureChat(EntityTypeBuilder<Event> builder)
+        {
+            builder.HasOne(e => e.Chat)
+                .WithOne(c => c.Event)
+                .HasForeignKey<Chat>(c => c.EventId);
         }
     }
 }

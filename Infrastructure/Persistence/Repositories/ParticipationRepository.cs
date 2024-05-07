@@ -59,6 +59,21 @@ namespace Infrastructure.Persistence.Repositories
         {
             return await _dbContext.Participations.FindAsync(participationId);
         }
+
+        public async Task<Participation?> GetParticipation(Guid appUserId, EventId eventId)
+        {
+            Participation? participation = null;
+
+            var user = await _dbContext.DomainUsers
+                .FirstOrDefaultAsync(u => u.ApplicationUserId == appUserId);
+            
+            if (user is not null)
+            {
+                participation =  await _dbContext.Participations.FirstOrDefaultAsync(p => p.UserId == user.Id);
+            }
+
+            return participation;
+        }
     }
 }
 
