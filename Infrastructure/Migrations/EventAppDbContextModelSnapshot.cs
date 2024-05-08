@@ -22,20 +22,29 @@ namespace Infrastructure.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Domain.ChatAggregate.Chat", b =>
+            modelBuilder.Entity("Domain.ChatAggregate.Entities.Message", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("EventId")
+                    b.Property<Guid>("AuthorId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Text")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UpdatedDateTime")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("EventId")
-                        .IsUnique();
+                    b.HasIndex("AuthorId");
 
-                    b.ToTable("Chat");
+                    b.ToTable("Messages", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Common.Models.ApplicationUser", b =>
@@ -136,6 +145,8 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("OrganizerId");
+
                     b.ToTable("Events", (string)null);
                 });
 
@@ -188,6 +199,9 @@ namespace Infrastructure.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
 
                     b.ToTable("Organizers", (string)null);
                 });
@@ -373,46 +387,25 @@ namespace Infrastructure.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("Domain.ChatAggregate.Chat", b =>
+            modelBuilder.Entity("Domain.ChatAggregate.Entities.Message", b =>
                 {
-                    b.HasOne("Domain.EventAggregate.Event", "Event")
-                        .WithOne("Chat")
-                        .HasForeignKey("Domain.ChatAggregate.Chat", "EventId")
+                    b.HasOne("Domain.ParticipationAggregate.Participation", "Author")
+                        .WithMany("Messages")
+                        .HasForeignKey("AuthorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.OwnsMany("Domain.ChatAggregate.Entities.Message", "Messages", b1 =>
-                        {
-                            b1.Property<Guid>("Id")
-                                .HasColumnType("uniqueidentifier");
-
-                            b1.Property<Guid>("ChatId")
-                                .HasColumnType("uniqueidentifier");
-
-                            b1.Property<string>("Text")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)");
-
-                            b1.Property<DateTime>("UpdatedDateTime")
-                                .HasColumnType("datetime2");
-
-                            b1.HasKey("Id", "ChatId");
-
-                            b1.HasIndex("ChatId");
-
-                            b1.ToTable("Messages", (string)null);
-
-                            b1.WithOwner()
-                                .HasForeignKey("ChatId");
-                        });
-
-                    b.Navigation("Event");
-
-                    b.Navigation("Messages");
+                    b.Navigation("Author");
                 });
 
             modelBuilder.Entity("Domain.EventAggregate.Event", b =>
                 {
+                    b.HasOne("Domain.OrganizerAggregate.Organizer", "Organizer")
+                        .WithMany("Events")
+                        .HasForeignKey("OrganizerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.OwnsMany("Domain.EventAggregate.Entities.SubEvent", "SubEvents", b1 =>
                         {
                             b1.Property<Guid>("Id")
@@ -485,6 +478,8 @@ namespace Infrastructure.Migrations
 
                     b.Navigation("Address");
 
+                    b.Navigation("Organizer");
+
                     b.Navigation("SubEvents");
                 });
 
@@ -528,32 +523,13 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.OrganizerAggregate.Organizer", b =>
                 {
-                    b.OwnsMany("Domain.EventAggregate.ValueObjects.EventId", "EventIds", b1 =>
-                        {
-                            b1.Property<int>("Id")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("int");
+                    b.HasOne("Domain.UserAggregate.User", "User")
+                        .WithOne("Organizer")
+                        .HasForeignKey("Domain.OrganizerAggregate.Organizer", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                            SqlServerPropertyBuilderExtensions.UseIdentityColumn(b1.Property<int>("Id"));
-
-                            b1.Property<Guid>("OrganizerId")
-                                .HasColumnType("uniqueidentifier");
-
-                            b1.Property<Guid>("Value")
-                                .HasColumnType("uniqueidentifier")
-                                .HasColumnName("EventId");
-
-                            b1.HasKey("Id");
-
-                            b1.HasIndex("OrganizerId");
-
-                            b1.ToTable("OrganizerEventIds", (string)null);
-
-                            b1.WithOwner()
-                                .HasForeignKey("OrganizerId");
-                        });
-
-                    b.Navigation("EventIds");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Domain.ParticipationAggregate.Participation", b =>
@@ -644,9 +620,6 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.EventAggregate.Event", b =>
                 {
-                    b.Navigation("Chat")
-                        .IsRequired();
-
                     b.Navigation("Invites");
 
                     b.Navigation("JoinRequests");
@@ -654,11 +627,24 @@ namespace Infrastructure.Migrations
                     b.Navigation("Participations");
                 });
 
+            modelBuilder.Entity("Domain.OrganizerAggregate.Organizer", b =>
+                {
+                    b.Navigation("Events");
+                });
+
+            modelBuilder.Entity("Domain.ParticipationAggregate.Participation", b =>
+                {
+                    b.Navigation("Messages");
+                });
+
             modelBuilder.Entity("Domain.UserAggregate.User", b =>
                 {
                     b.Navigation("Invites");
 
                     b.Navigation("JoinRequests");
+
+                    b.Navigation("Organizer")
+                        .IsRequired();
 
                     b.Navigation("Participations");
                 });

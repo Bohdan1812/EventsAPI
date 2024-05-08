@@ -8,11 +8,10 @@ using Application.Events.Queries.GetEvent;
 using Application.Events.Queries.GetUserEvents;
 using Contracts.Event;
 using Contracts.Event.SubEvent;
-using Domain.Common.Models;
 using ErrorOr;
+using Mapster;
 using MapsterMapper;
 using MediatR;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
@@ -75,7 +74,7 @@ namespace Api.Controllers
             var getEventResult = await _mediator.Send(command);
 
             return getEventResult.Match(
-                getEventResult => Ok(getEventResult),
+                getEventResult => Ok(_mapper.Map<EventResponse>(getEventResult)),
                 errors => Problem(errors));
         }
 
@@ -94,7 +93,7 @@ namespace Api.Controllers
             var getEventsResult = await _mediator.Send(command);
 
             return getEventsResult.Match(
-                getEventResult => Ok(getEventResult),
+                getEventResult => Ok(getEventResult.Adapt<List<EventResponse>>()),
                 errors => Problem(errors));
         }
 
@@ -173,7 +172,5 @@ namespace Api.Controllers
                 result => Ok(result),
                 errors => Problem(errors));
         }
-
-
     }
 }

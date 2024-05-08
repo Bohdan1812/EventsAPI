@@ -1,4 +1,5 @@
-﻿using Domain.UserAggregate;
+﻿using Domain.OrganizerAggregate;
+using Domain.UserAggregate;
 using Domain.UserAggregate.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -15,9 +16,10 @@ namespace Infrastructure.Persistence.Configurations
             ConfigureJoinRequests(builder);
             ConfigureInvites(builder);
             ConfigureParticipations(builder);
+            ConfigureOrganizer(builder);
         }
 
-        private void ConfigureUserTable(EntityTypeBuilder<User> builder)
+        private static void ConfigureUserTable(EntityTypeBuilder<User> builder)
         {
             builder.ToTable("Users");
 
@@ -29,14 +31,14 @@ namespace Infrastructure.Persistence.Configurations
                     value => UserId.Create(value));
         }
 
-        private void ConfigureJoinRequests(EntityTypeBuilder<User> builder)
+        private static void ConfigureJoinRequests(EntityTypeBuilder<User> builder)
         {
             builder.HasMany(u => u.JoinRequests)
                             .WithOne(j => j.User)
                             .HasForeignKey(j => j.UserId)
                             .OnDelete(DeleteBehavior.Cascade);
         }
-        private void ConfigureInvites(EntityTypeBuilder<User> builder)
+        private static void ConfigureInvites(EntityTypeBuilder<User> builder)
         {
             builder.HasMany(u => u.Invites)
                             .WithOne(j => j.User)
@@ -44,7 +46,7 @@ namespace Infrastructure.Persistence.Configurations
                             .OnDelete(DeleteBehavior.Cascade);
         }
 
-        private void ConfigureParticipations(EntityTypeBuilder<User> builder)
+        private static void ConfigureParticipations(EntityTypeBuilder<User> builder)
         {
             builder.HasMany(u => u.Participations)
                 .WithOne(p => p.User)
@@ -52,11 +54,19 @@ namespace Infrastructure.Persistence.Configurations
                 .OnDelete(DeleteBehavior.Cascade);
         }
 
-        private void ConfigureApplicationUser(EntityTypeBuilder<User> builder)
+        private static void ConfigureApplicationUser(EntityTypeBuilder<User> builder)
         {
             builder.HasOne(u => u.ApplicationUser)
                 .WithOne(a => a.User)
                 .HasForeignKey<User>(u => u.ApplicationUserId)
+                .OnDelete(DeleteBehavior.Cascade);
+        }
+
+        private static void ConfigureOrganizer(EntityTypeBuilder<User> builder)
+        {
+            builder.HasOne(u => u.Organizer)
+                .WithOne(o => o.User)
+                .HasForeignKey<Organizer>(o => o.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
         }
 

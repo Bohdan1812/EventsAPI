@@ -8,6 +8,8 @@ using Application.Events.Commands.Update;
 using Application.Events.Queries.GetEvent;
 using Contracts.Event;
 using Contracts.Event.SubEvent;
+using Domain.EventAggregate;
+using Domain.EventAggregate.Entities;
 using Mapster;
 
 namespace Api.Common.Mapping
@@ -66,6 +68,20 @@ namespace Api.Common.Mapping
                 .Map(dest => dest.ApplicationUserId, src => src.appUserId)
                 .Map(dest => dest.EventId, src => src.request.EventId)
                 .Map(dest => dest.SubEventId, src => src.request.SubEventId);
+
+            config.NewConfig<Event, EventResponse>()
+                .Map(dest => dest.Id, src => src.Id.Value)
+                .Map(dest => dest.Name, src => src.Name)
+                .Map(dest => dest.Description, src => src.Description)
+                .Map(dest => dest.SubEvents, src => src.SubEvents.Adapt<List<SubEventResponse>>())
+                .Map(dest => dest.Link, src => src.Link)
+                .Map(dest => dest.Address, src => src.Address)
+                .Map(dest => dest.OrganizerId, src => src.OrganizerId.Value)
+                .Map(dest => dest.StartDateTime, src => src.StartDateTime)
+                .Map(dest => dest.EndDateTime, src => src.EndDateTime);
+
+            config.NewConfig<SubEvent, SubEventResponse>()
+                .Map(dest => dest.SubEventId, src => src.Id.Value);
         }
     }
 }

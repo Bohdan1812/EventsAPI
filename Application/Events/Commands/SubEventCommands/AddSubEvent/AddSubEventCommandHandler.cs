@@ -46,7 +46,6 @@ namespace Application.Events.Commands.SubEventCommands.AddSubEvent
             try
             {
                 newSubEvent = new SubEvent(
-                    SubEventId.CreateUnique(),
                     request.Name,
                     description,
                     request.StartDateTime,

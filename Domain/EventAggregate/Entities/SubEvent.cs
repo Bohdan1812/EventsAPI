@@ -36,8 +36,8 @@ namespace Domain.EventAggregate.Entities
             }
         }
 
-        public SubEvent(SubEventId subEventId, string name, string? description, DateTime startDateTime, DateTime endDateTime)
-            : base(subEventId)
+        public SubEvent(string name, string? description, DateTime startDateTime, DateTime endDateTime)
+            : base(SubEventId.CreateUnique())
         {
             Name = name;
             Description = description;

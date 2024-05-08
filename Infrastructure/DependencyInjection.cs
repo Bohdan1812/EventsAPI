@@ -5,7 +5,6 @@ using Infrastructure.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-
 namespace Infrastructure
 {
     public static class DependencyInjection
@@ -38,7 +37,7 @@ namespace Infrastructure
             services.AddScoped<IJoinRequestRepository, JoinRequestRepository>();
             services.AddScoped<IInviteRepository, InviteRepository>();
             services.AddScoped<IParticipationRepository, ParticipationRepository>();
-            services.AddScoped<IChatRepository, ChatRepository>();  
+            services.AddScoped<IMessageRepository, MessageRepository>();  
             
             return services;
         }

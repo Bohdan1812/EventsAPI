@@ -1,8 +1,5 @@
-﻿using Domain.ChatAggregate;
-using Domain.ChatAggregate.ValueObjects;
-using Domain.EventAggregate;
+﻿using Domain.EventAggregate;
 using Domain.EventAggregate.ValueObjects;
-using Domain.OrganizerAggregate;
 using Domain.OrganizerAggregate.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -18,10 +15,9 @@ namespace Infrastructure.Persistence.Configurations
             ConfigureJoinRequests(builder);
             ConfigureInvites(builder);
             ConfigureParticipations(builder);
-            ConfigureChat(builder);
         }
 
-        private void ConfigureEventsTable(EntityTypeBuilder<Event> builder)
+        private static void ConfigureEventsTable(EntityTypeBuilder<Event> builder)
         {
             builder.ToTable("Events");
 
@@ -58,7 +54,7 @@ namespace Infrastructure.Persistence.Configurations
                     .HasColumnName("House");
             });
         }
-        private void ConfigureSubEvents(EntityTypeBuilder<Event> builder)
+        private static void ConfigureSubEvents(EntityTypeBuilder<Event> builder)
         {
             builder.OwnsMany(m => m.SubEvents, se =>
             {
@@ -79,14 +75,14 @@ namespace Infrastructure.Persistence.Configurations
             builder.Metadata.FindNavigation(nameof(Event.SubEvents))!
                 .SetPropertyAccessMode(PropertyAccessMode.Field);
         }
-        private void ConfigureJoinRequests(EntityTypeBuilder<Event> builder)
+        private static void ConfigureJoinRequests(EntityTypeBuilder<Event> builder)
         {
             builder.HasMany(e => e.JoinRequests)
                 .WithOne(j => j.Event)
                 .HasForeignKey(j => j.EventId)
                 .OnDelete(DeleteBehavior.Cascade);
         }
-        private void ConfigureInvites(EntityTypeBuilder<Event> builder)
+        private static void ConfigureInvites(EntityTypeBuilder<Event> builder)
         {
             builder.HasMany(e => e.Invites)
                 .WithOne(i => i.Event)
@@ -94,7 +90,7 @@ namespace Infrastructure.Persistence.Configurations
                 .OnDelete(DeleteBehavior.Cascade);
         }
 
-        private void ConfigureParticipations(EntityTypeBuilder<Event> builder)
+        private static void ConfigureParticipations(EntityTypeBuilder<Event> builder)
         {
             builder.HasMany(e => e.Participations)
                 .WithOne(p => p.Event)
@@ -102,11 +98,6 @@ namespace Infrastructure.Persistence.Configurations
                 .OnDelete(DeleteBehavior.Cascade);
         }
 
-        public void ConfigureChat(EntityTypeBuilder<Event> builder)
-        {
-            builder.HasOne(e => e.Chat)
-                .WithOne(c => c.Event)
-                .HasForeignKey<Chat>(c => c.EventId);
-        }
+        
     }
 }

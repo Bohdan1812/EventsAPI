@@ -16,17 +16,13 @@ namespace Application.Authentication.Commands.Register
         : IRequestHandler<RegisterCommand, ErrorOr<string>>
     {
         private readonly IUserRepository _userRepository;
-        private readonly IOrganizerRepository _organizerRepository;
         private readonly UserManager<ApplicationUser> _userManager;
         public RegsiterCommandHandler(
             IUserRepository userRepository,
-            UserManager<ApplicationUser> userManager
-,
-            IOrganizerRepository organizerRepository)
+            UserManager<ApplicationUser> userManager)
         {
             _userRepository = userRepository;
             _userManager = userManager;
-            _organizerRepository = organizerRepository;
         }
 
         public async Task<ErrorOr<string>> Handle(RegisterCommand request, CancellationToken cancellationToken)
@@ -53,19 +49,11 @@ namespace Application.Authentication.Commands.Register
                 if (appUser is not null)
                 {
                     var user = new User(
-                        UserId.CreateUnique(),
                         request.FirstName,
                         request.LastName,
                         appUser);
 
                     await _userRepository.Add(user);
-
-                    var organizer = new Organizer(
-                        OrganizerId.CreateUnique(),
-                        user.Id
-                        );
-
-                    await _organizerRepository.Add(organizer);
 
                     return "User created successfully!";
                 }

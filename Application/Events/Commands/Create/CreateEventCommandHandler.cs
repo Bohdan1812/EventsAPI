@@ -3,7 +3,6 @@ using Application.Persistence.Repositories;
 using Domain.EventAggregate;
 using Domain.EventAggregate.Entities;
 using Domain.EventAggregate.ValueObjects;
-using Domain.ParticipationAggregate;
 using ErrorOr;
 using MediatR;
 
@@ -11,33 +10,33 @@ namespace Application.Events.Commands.Create
 {
     public class CreateEventCommandHandler : IRequestHandler<CreateEventCommand, ErrorOr<string>>
     {
-        private readonly IEventRepository _eventRepository;
         private readonly IOrganizerRepository _organizerRepository;
         private readonly IUserRepository _userRepository;
-        private readonly IParticipationRepository _participationRepository;
-        private readonly IChatRepository _chatRepository;
+        private readonly IEventRepository _eventRepository;
 
         public CreateEventCommandHandler(
-            IEventRepository eventRepository,
             IOrganizerRepository organizerRepository,
-            IParticipationRepository participationRepository,
             IUserRepository userRepository,
-            IChatRepository chatRepository)
+            IEventRepository eventRepository)
         {
-            _eventRepository = eventRepository;
             _organizerRepository = organizerRepository;
-            _participationRepository = participationRepository;
             _userRepository = userRepository;
-            _chatRepository = chatRepository;
+            _eventRepository = eventRepository;
         }
 
         public async Task<ErrorOr<string>> Handle(CreateEventCommand request, CancellationToken cancellationToken)
         {
             var organizer = await _organizerRepository.GetOrganizer(request.appUserId);
+
             if (organizer is null)
             {
                 return OrganizerError.OrganizerNotFound;
             }
+
+            var user = await _userRepository.GetUser(organizer.UserId);
+
+            if (user is null)
+                return UserError.UserNotFound;
 
             string description = "";
 
@@ -73,11 +72,10 @@ namespace Application.Events.Commands.Create
                 EventId.CreateUnique(),
                 request.Name,
                 description,
-                organizer.Id,
+                organizer,
                 request.StartDateTime,
                 request.EndDateTime,
                 request.SubEvents.ConvertAll(subEvent => new SubEvent(
-                    SubEventId.CreateUnique(),
                     subEvent.Name,
                     subEvent.Description,
                     subEvent.StartDateTime,
@@ -90,33 +88,14 @@ namespace Application.Events.Commands.Create
             {
                 return EventError.EventNotInitialized(ex.Message);
             }
+           
+            await _eventRepository.Add(newEvent);
 
-            Participation? participation = null;
+            var @event = await _eventRepository.GetEvent(newEvent.Id);
 
-            var user = await _userRepository.GetUser(organizer.UserId);
-
-            if (user is null)
-                return UserError.UserNotFound;
-
-            try
-            {
-                participation = new Participation(organizer, user, newEvent);
-            }
-            catch (Exception ex)
-            {
-                return ParticipationError.ParticipationNotInitialized(ex.Message);
-            }
-
-            
-
-            if (newEvent is not null &&
-                participation is not null)
-            {
-                await _eventRepository.Add(newEvent);
-                await _participationRepository.Add(participation);
-
-                return "Event created Successfully!";
-            }
+            if (@event is not null && 
+                @event.Equals(newEvent))
+                return "Event created successfully!";
 
             return EventError.EventNotAdded;
         }

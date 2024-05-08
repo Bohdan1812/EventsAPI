@@ -6,6 +6,10 @@ namespace Application.Common.Errors
     {
         public static Error OrganizerNotFound => Error.NotFound(
            code: "Organizer.NotFound",
-           description: "This organizer was not found!");
+           description: "This Organizer was not found!");
+
+        public static Error OrganizerContiansEvents => Error.Conflict(
+            code: "Organizer.CanNotBeDeleted",
+            description: "Organizer has events. To delete organizer, remove all created events!");
     }
 }

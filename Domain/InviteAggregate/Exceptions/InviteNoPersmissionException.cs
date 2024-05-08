@@ -3,7 +3,7 @@
     public class InviteNoPersmissionException : Exception
     {
         public InviteNoPersmissionException() 
-            : base("You are not organizer of event! You have no permission to invite users!") 
+            : base("You are not Organizer of event! You have no permission to invite users!") 
         { }
     }
 }

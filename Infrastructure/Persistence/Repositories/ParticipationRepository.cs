@@ -33,24 +33,24 @@ namespace Infrastructure.Persistence.Repositories
         public async Task<List<Participation>> GetParticipationsByUser(UserId userId)
         {
             return await _dbContext.Participations
-                .Where(jr => jr.UserId == userId).ToListAsync();
+                .Where(p => p.UserId == userId).ToListAsync();
         }
 
         public async Task<List<Participation>> GetParticipationsByEvent(EventId eventId)
         {
             return await _dbContext.Participations
-                .Where(jr => jr.EventId == eventId).ToListAsync();
+                .Where(p => p.EventId == eventId).ToListAsync();
         }
 
 
         public async Task Remove(ParticipationId participationId)
         {
-            var invite = await _dbContext.Invites
+            var participation = await _dbContext.Participations
                 .FirstOrDefaultAsync(j => j.Id == participationId);
 
-            if (invite is not null)
+            if (participation is not null)
             {
-                _dbContext.Remove(invite);
+                _dbContext.Remove(participation);
                 await _dbContext.SaveChangesAsync();
             }
         }

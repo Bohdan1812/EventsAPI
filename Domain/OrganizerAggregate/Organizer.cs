@@ -1,6 +1,7 @@
 ﻿using Domain.Common.Models;
-using Domain.EventAggregate.ValueObjects;
+using Domain.EventAggregate;
 using Domain.OrganizerAggregate.ValueObjects;
+using Domain.UserAggregate;
 using Domain.UserAggregate.ValueObjects;
 
 namespace Domain.OrganizerAggregate
@@ -12,33 +13,40 @@ namespace Domain.OrganizerAggregate
         {
 
         }
-        #pragma warning restore CS8618
+#pragma warning restore CS8618
 
-        private readonly List<EventId> _eventIds = new List<EventId>();
+        private readonly List<Event> _events = [];
+        public UserId UserId { get; private set; } = null!;
+        public User User { get; private set; } = null!;
 
-        public UserId UserId { get; }
+        public IReadOnlyCollection<Event> Events => _events.AsReadOnly();
 
-        public IReadOnlyCollection<EventId> EventIds => _eventIds.AsReadOnly();
-
-        public Organizer(OrganizerId organizerId, UserId userId ) 
-            : base(organizerId)
-        { 
-            UserId = userId;
+        public Organizer(User user) 
+            : base(OrganizerId.CreateUnique())
+        {
+            if (user.Organizer is not null)
+                throw new Exception("organizer already exists");
+            User = user;
         }
 
-        public void AddEventId( EventId eventId )
+        public void AddEvent(UserId userId, Event @event)
         {
-            _eventIds.Add( eventId );
+            if (User.Id != userId)
+                throw new Exception();
+
+            _events.Add(@event);
         }
 
-        public void RemoveEventId( EventId eventId ) 
+        public void RemoveEvent(UserId userId, Event @event) 
         {
-            if (!_eventIds.Contains(eventId))
+            if(User.Id == userId)
+
+            if (!_events.Contains(@event))
             {
                 throw new Exception("There is no such event in your list");
             }
 
-            _eventIds.Remove(eventId);
+            _events.Remove(@event);
         }
 
     }

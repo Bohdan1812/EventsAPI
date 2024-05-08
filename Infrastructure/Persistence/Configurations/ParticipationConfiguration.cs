@@ -18,6 +18,12 @@ namespace Infrastructure.Persistence.Configurations
                 .HasConversion(
                     id => id.Value,
                     value => ParticipationId.Create(value));
+
+            builder.HasMany(p => p.Messages)
+                .WithOne(m => m.Author)
+                .HasForeignKey(m => m.AuthorId)
+                .OnDelete(DeleteBehavior.Cascade);
+
         }
     }
 }

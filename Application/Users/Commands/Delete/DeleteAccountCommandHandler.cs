@@ -38,6 +38,17 @@ namespace Application.Users.Commands.Delete
 
             var user = await _userRepository.GetUser(request.AppUserId);
 
+            if (user is null)
+                return UserError.UserNotFound;
+
+            user = await _userRepository.GetFullUser(user.Id);
+
+            if (user is null)
+                return UserError.UserNotFound;
+
+            if (user.Organizer.Events.Count > 0)
+                return OrganizerError.OrganizerContiansEvents;
+
             var deleteAppUserResult = await _userManager.DeleteAsync(appUser);
 
             if (user is not null)

@@ -53,20 +53,9 @@ namespace Infrastructure.Persistence.Repositories
 
         public async Task Update(Event updatedEvent)
         {
-            var existingEvent = await _dbContext.Events.FirstOrDefaultAsync(e => e.Id == updatedEvent.Id);
-
-            if (existingEvent is not null)
-            {
-                existingEvent.Update(
-                    updatedEvent.Name, 
-                    updatedEvent.Description,
-                    updatedEvent.StartDateTime,
-                    updatedEvent.EndDateTime,
-                    updatedEvent.Address,
-                    updatedEvent.Link);
-
-                await _dbContext.SaveChangesAsync();
-            }
+            _dbContext.Entry(updatedEvent).State = EntityState.Modified;
+            await _dbContext.SaveChangesAsync();
+            
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Domain.Common.Models;
+﻿using Domain.ChatAggregate.Entities;
+using Domain.Common.Models;
 using Domain.EventAggregate;
 using Domain.EventAggregate.ValueObjects;
 using Domain.InviteAggregate;
@@ -20,10 +21,12 @@ namespace Domain.ParticipationAggregate
 
         }
 #pragma warning restore CS8618
+        private readonly List<Message> _messages = [];
         public UserId UserId { get; } = null!;
         public User User { get; } = null!;
         public EventId EventId { get; } = null!;
         public Event Event { get; } = null!;
+        public IReadOnlyList<Message> Messages => _messages.AsReadOnly();
 
         public Participation(
             JoinRequest joinRequest,

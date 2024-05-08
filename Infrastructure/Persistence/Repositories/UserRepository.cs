@@ -23,6 +23,8 @@ namespace Infrastructure.Persistence.Repositories
             return await _dbContext.DomainUsers
                 .Include(u => u.JoinRequests)
                 .Include(u => u.Invites)
+                .Include(u => u.Organizer)
+                .Include(u => u.Organizer.Events)
                 .FirstOrDefaultAsync(u => u.Id == userId);
         }
         public async Task<User?> GetUser(UserId userId)
@@ -58,8 +60,7 @@ namespace Infrastructure.Persistence.Repositories
 
         public async Task Update(User user)
         {
-            _dbContext.Update(user);
-            await _dbContext.SaveChangesAsync();
+            throw new NotImplementedException();
         }
     }
 }

@@ -1,10 +1,10 @@
-﻿using Domain.ChatAggregate;
-using Domain.Common.Models;
+﻿using Domain.Common.Models;
 using Domain.EventAggregate.Entities;
 using Domain.EventAggregate.Exceptions;
 using Domain.EventAggregate.ValueObjects;
 using Domain.InviteAggregate;
 using Domain.JoinRequestAggregate;
+using Domain.OrganizerAggregate;
 using Domain.OrganizerAggregate.ValueObjects;
 using Domain.ParticipationAggregate;
 
@@ -19,13 +19,13 @@ namespace Domain.EventAggregate
         }
 #pragma warning restore CS8618
 
-        private readonly List<Participation> _participations = new List<Participation>();
+        private readonly List<Participation> _participations = [];
 
-        private readonly List<JoinRequest> _joinRequests = new List<JoinRequest>();
+        private readonly List<JoinRequest> _joinRequests = [];
 
-        private readonly List<Invite> _invites = new List<Invite>();
+        private readonly List<Invite> _invites = [];
 
-        private readonly List<SubEvent> _subEvents = new List<SubEvent>();
+        private readonly List<SubEvent> _subEvents = [];
 
         private DateTime _endDateTime;
 
@@ -33,9 +33,8 @@ namespace Domain.EventAggregate
 
         public string? Description { get; private set; }
 
-        public OrganizerId OrganizerId { get; private set; }
-
-        public Chat Chat { get; } = null!;
+        public OrganizerId OrganizerId { get; private set; } = null!;
+        public Organizer Organizer { get; private set; } = null!;
 
         public IReadOnlyList<Participation> Participations => _participations.AsReadOnly();
 
@@ -76,7 +75,7 @@ namespace Domain.EventAggregate
             EventId eventId,
             string name,
             string description,
-            OrganizerId organizerId,
+            Organizer organizer,
             DateTime startDateTime,
             DateTime endDateTime,
             List<SubEvent> subEvents,
@@ -91,13 +90,23 @@ namespace Domain.EventAggregate
 
             Name = name;
             Description = description;
-            OrganizerId = organizerId;
+            OrganizerId = organizer.Id;
             StartDateTime = startDateTime;
             EndDateTime = endDateTime;
+
+            try 
+            {
+                var participation = new Participation(organizer, organizer.User, this);
+                _participations.Add(participation);
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+
             _subEvents = subEvents;
             Address = address;
             Link = link;
-            Chat = new Chat(this);
             CreatedDateTime = DateTime.UtcNow;
             UpdatedDateTime = DateTime.UtcNow;
         }
@@ -120,24 +129,21 @@ namespace Domain.EventAggregate
         {
             var deletedSubEvent = SubEvents.FirstOrDefault(se => se.Id == subEventId);
 
-            if (deletedSubEvent is null)
+            if (deletedSubEvent is not null)
+            {
+                _subEvents.Remove(deletedSubEvent);
+
+                UpdatedDateTime = DateTime.UtcNow;
+            }
+            else
             {
                 throw new SubEventNotFoundException();
             }
-
-            _subEvents.Remove(deletedSubEvent);
-
-            UpdatedDateTime = DateTime.UtcNow;
         }
 
         public void UpdateSubEvent(SubEvent subEvent)
         {
-            var updatedSubEvent = SubEvents.FirstOrDefault(se => se.Id == subEvent.Id);
-
-            if (updatedSubEvent is null)
-            {
-                throw new SubEventNotFoundException();
-            }
+            var updatedSubEvent = SubEvents.FirstOrDefault(se => se.Id == subEvent.Id) ?? throw new SubEventNotFoundException();
 
             if (updatedSubEvent.StartDateTime < StartDateTime ||
                 updatedSubEvent.EndDateTime > EndDateTime)

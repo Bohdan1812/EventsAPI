@@ -1,7 +1,5 @@
 ﻿using Domain.OrganizerAggregate;
 using Domain.OrganizerAggregate.ValueObjects;
-using Domain.UserAggregate;
-using Domain.UserAggregate.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -20,28 +18,10 @@ namespace Infrastructure.Persistence.Configurations
                     id => id.Value,
                     value => OrganizerId.Create(value));
 
-            builder.Property(x => x.UserId)
-                .ValueGeneratedNever()
-                .HasConversion(
-                    userId => userId.Value,
-                    value => UserId.Create(value));
-
-            builder.OwnsMany(x => x.EventIds, eId =>
-            {
-                eId.ToTable("OrganizerEventIds");
-
-                eId.WithOwner().HasForeignKey("OrganizerId");
-
-                eId.HasKey("Id");
-
-                eId.Property(e => e.Value)
-                .HasColumnName("EventId")
-                .ValueGeneratedNever();
-
-            });
-
-            builder.Metadata.FindNavigation(nameof(Organizer.EventIds))!
-                .SetPropertyAccessMode(PropertyAccessMode.Field);
+            builder.HasMany(o => o.Events)
+                .WithOne(e => e.Organizer)
+                .HasForeignKey(e => e.OrganizerId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

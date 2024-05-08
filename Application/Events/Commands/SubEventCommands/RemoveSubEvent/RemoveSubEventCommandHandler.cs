@@ -39,13 +39,13 @@ namespace Application.Events.Commands.SubEventCommands.RemoveSubEvent
             try
             {
                 @event.RemoveSubEvent(subEventId);
-                await _eventRepository.Update(@event);
             }
             catch (Exception ex)
             {
                 return EventError.SubEventError.SubEventNotDeleted(ex.Message);
             }
 
+            await _eventRepository.Update(@event);
             @event = await _eventRepository.GetEvent(eventId);
 
             if (@event is not null &&

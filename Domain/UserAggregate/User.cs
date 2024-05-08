@@ -1,6 +1,7 @@
 ﻿using Domain.Common.Models;
 using Domain.InviteAggregate;
 using Domain.JoinRequestAggregate;
+using Domain.OrganizerAggregate;
 using Domain.ParticipationAggregate;
 using Domain.UserAggregate.ValueObjects;
 
@@ -23,45 +24,39 @@ namespace Domain.UserAggregate
         public Guid ApplicationUserId { get; set; } 
         public ApplicationUser ApplicationUser { get; set; }
 
-        private readonly List<Invite> _invites = new List<Invite>();
+        private readonly List<Invite> _invites = [];
         public IReadOnlyList<Invite> Invites => _invites.AsReadOnly();
 
-        private List<JoinRequest> _joinRequests = new List<JoinRequest>();
+        private readonly List<JoinRequest> _joinRequests = [];
         public IReadOnlyList<JoinRequest> JoinRequests => _joinRequests.AsReadOnly();
 
-        private readonly List<Participation> _participations = new List<Participation>();
+        private readonly List<Participation> _participations = [];
         public IReadOnlyList<Participation> Participations => _participations.AsReadOnly();
 
+        public Organizer Organizer { get; private set; } = null!;
+
         public User(
-            UserId userId,
             string firstName,
             string lastName,
             ApplicationUser appUser
         )
-            : base(userId)
+            : base(UserId.CreateUnique())
         {
             FirstName = firstName;
             LastName = lastName;
+
+            try 
+            {
+                Organizer = new Organizer(this);
+            }
+            catch( Exception ex ) 
+            {
+                throw ex;
+            }
+
             CreatedDateTime = DateTime.UtcNow;
             UpdatedDateTime = DateTime.UtcNow;
             ApplicationUser = appUser;
         }
-
-        /*public static User Create(string firsName,
-            string lastName,
-            string email,
-            string password)
-        {
-            return new(
-                UserId.CreateUnique(),
-                firsName,
-                lastName,
-                email,
-                password,
-                DateTime.UtcNow,
-                DateTime.UtcNow
-            );
-        }*/
-
     }
 }
