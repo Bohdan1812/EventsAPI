@@ -21,6 +21,7 @@ namespace Infrastructure.Persistence.Repositories
         public async Task<User?> GetFullUser(UserId userId)
         {
             return await _dbContext.DomainUsers
+                .Include(u => u.ApplicationUser)
                 .Include(u => u.JoinRequests)
                 .Include(u => u.Invites)
                 .Include(u => u.Organizer)

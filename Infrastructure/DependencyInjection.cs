@@ -23,9 +23,12 @@ namespace Infrastructure
             this IServiceCollection services,
             ConfigurationManager configuration)
         {
+           var dbConnection = configuration["ConnectionStrings:Events:SqlDb"];
+
             services.AddDbContext<EventAppDbContext>(options =>
+                //options.UseSqlServer(dbConnection));
                 options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
-            
+
             services.AddAuthorization();
 
             services.AddIdentityApiEndpoints<ApplicationUser>()

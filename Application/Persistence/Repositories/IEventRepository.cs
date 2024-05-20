@@ -2,6 +2,7 @@
 using Domain.EventAggregate.Entities;
 using Domain.EventAggregate.ValueObjects;
 using Domain.OrganizerAggregate.ValueObjects;
+using Domain.UserAggregate.ValueObjects;
 
 namespace Application.Persistence.Repositories
 {
@@ -10,9 +11,12 @@ namespace Application.Persistence.Repositories
         Task<Event?> GetEvent(EventId eventId);
         Task<Event?> GetFullEvent(EventId eventId);
         Task<List<Event>> GetOrganizerEvents(OrganizerId organizerId);
+        Task<List<Event>> GetUserEvents(UserId userId);
         Task Add(Event @event);
         Task Remove(EventId eventId);
         Task Update(Event @event);
+
+
        /*
         Task AddSubEvent(EventId eventId, SubEvent subEvent);
 

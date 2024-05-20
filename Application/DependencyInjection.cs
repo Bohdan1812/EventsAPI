@@ -21,6 +21,7 @@ namespace Application
 
             services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
+
             return services;
         }
 

@@ -1,5 +1,8 @@
 ﻿using Application.Users.Commands.Delete;
 using Application.Users.Commands.Update;
+using Application.Users.Dto;
+using Application.Users.Queries.GetCurrentUserInfo;
+using Application.Users.Queries.GetUserInfo;
 using Contracts.Authentication;
 using Contracts.User;
 using Domain.Common.Models;
@@ -51,19 +54,50 @@ namespace Api.Controllers
         [HttpDelete("deleteUser")]
         public async Task<IActionResult> DeleteAccount(DeleteAccountRequestModel request)
         {
-            var appUser = await _userManager.GetUserAsync(User);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            if (appUser is null)
+            if (String.IsNullOrEmpty(userId))
             {
                 return BadRequest("User not found!");
             }
 
-            var command = _mapper.Map<DeleteAccountCommand>((appUser.Id, request));
+            var command = _mapper.Map<DeleteAccountCommand>((userId, request));
 
             ErrorOr<string> deleteResult = await _mediator.Send(command);
 
             return deleteResult.Match(
                authReult => Ok(authReult),
+               errors => Problem(errors));
+        }
+
+        [HttpGet("getCurrentUserInfo")]
+        public async Task<IActionResult> GetCurrentUserInfo()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (String.IsNullOrEmpty(userId))
+            {
+                return BadRequest("User not found!");
+            }
+
+            var query = _mapper.Map<GetCurrentUserInfoQuery>(new Guid(userId));
+
+            ErrorOr<UserInfo> getUserResult = await _mediator.Send(query);
+
+            return getUserResult.Match(
+               result => Ok(result),
+               errors => Problem(errors));
+        }
+
+        [HttpGet("getUserInfo")]
+        public async Task<IActionResult> GetUserInfo([FromQuery] GetUserInfoRequestModel request)
+        {
+            var query = _mapper.Map<GetUserInfoQuery>(request);
+
+            ErrorOr<UserInfo> getUserResult = await _mediator.Send(query);
+
+            return getUserResult.Match(
+               result => Ok(result),
                errors => Problem(errors));
         }
     }

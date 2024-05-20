@@ -4,6 +4,7 @@ using Application.Events.Commands.SubEventCommands.AddSubEvent;
 using Application.Events.Commands.SubEventCommands.RemoveSubEvent;
 using Application.Events.Commands.SubEventCommands.UpdateSubEvent;
 using Application.Events.Commands.Update;
+using Application.Events.Queries.GetAllUserEvents;
 using Application.Events.Queries.GetEvent;
 using Application.Events.Queries.GetUserEvents;
 using Contracts.Event;
@@ -171,6 +172,26 @@ namespace Api.Controllers
             return result.Match(
                 result => Ok(result),
                 errors => Problem(errors));
+        }
+
+        [HttpGet("getUserEvents")]
+        public async Task<IActionResult> GetUserEvents([FromQuery] GetUserEventsRequestModel request)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (String.IsNullOrEmpty(userId))
+            {
+                return BadRequest("User not found!");
+            }
+
+            var command = _mapper.Map<GetUserEventsQuery>((new Guid(userId), request));
+
+            var result = await _mediator.Send(command);
+
+            return result.Match(
+                result => Ok(result.Adapt<List<EventResponse>>()),
+                errors => Problem(errors));
+
         }
     }
 }

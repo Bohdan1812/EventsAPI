@@ -5,6 +5,7 @@ using Application.Events.Commands.SubEventCommands.AddSubEvent;
 using Application.Events.Commands.SubEventCommands.RemoveSubEvent;
 using Application.Events.Commands.SubEventCommands.UpdateSubEvent;
 using Application.Events.Commands.Update;
+using Application.Events.Queries.GetAllUserEvents;
 using Application.Events.Queries.GetEvent;
 using Contracts.Event;
 using Contracts.Event.SubEvent;
@@ -82,6 +83,10 @@ namespace Api.Common.Mapping
 
             config.NewConfig<SubEvent, SubEventResponse>()
                 .Map(dest => dest.SubEventId, src => src.Id.Value);
+
+            config.NewConfig<(Guid ApplicationUserId, GetUserEventsRequestModel request), GetUserEventsQuery>()
+                .Map(dest => dest.ApplicationUserId, src => src.ApplicationUserId)
+                .Map(dest => dest.StartDateTime, src => src.request.DateTime);
         }
     }
 }

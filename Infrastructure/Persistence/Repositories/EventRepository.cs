@@ -2,6 +2,7 @@
 using Domain.EventAggregate;
 using Domain.EventAggregate.ValueObjects;
 using Domain.OrganizerAggregate.ValueObjects;
+using Domain.UserAggregate.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Persistence.Repositories
@@ -39,6 +40,15 @@ namespace Infrastructure.Persistence.Repositories
 
             return await _dbContext.Events
                 .Where(e => e.OrganizerId == organizerId).ToListAsync();
+        }
+
+        public async Task<List<Event>> GetUserEvents(UserId userId)
+        {
+            return await _dbContext.Events
+                .Include(e => e.Participations)
+                .Where(e => e.Participations.Any(p => p.UserId == userId))
+                .OrderBy(e => e.StartDateTime)
+                .ToListAsync();
         }
 
         public async Task Remove(EventId eventId)
