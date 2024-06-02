@@ -2,6 +2,7 @@
 using Application.Participations.Commands.AddParticipationFromJoinRequest;
 using Application.Participations.Commands.RemoveOwnParticipation;
 using Application.Participations.Commands.RemoveParticipationAsOrganizer;
+using Application.Participations.Queries.GetOwnParticipationByEvent;
 using Application.Participations.Queries.GetOwnParticipations;
 using Application.Participations.Queries.GetParticipation;
 using Application.Participations.Queries.GetParticipationsByEvent;
@@ -120,7 +121,7 @@ namespace Api.Controllers
         }
 
         [HttpGet("getParticipationsByEvent")]
-        public async Task<IActionResult> GetParticipationsByEvent(GetParticipationsByEventRequestModel request)
+        public async Task<IActionResult> GetParticipationsByEvent([FromQuery]GetParticipationsByEventRequestModel request)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -138,7 +139,7 @@ namespace Api.Controllers
         }
 
         [HttpGet("getParticipation")]
-        public async Task<IActionResult> GetParticipation(GetParticipationRequestModel request)
+        public async Task<IActionResult> GetParticipation([FromQuery]GetParticipationRequestModel request)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -148,6 +149,24 @@ namespace Api.Controllers
             }
 
             var command = _mapper.Map<GetParticipationQuery>((new Guid(userId), request));
+            ErrorOr<Participation> getParticipationResult = await _mediator.Send(command);
+
+            return getParticipationResult.Match(
+                result => Ok(_mapper.Map<ParticipationResponse>(result)),
+                errors => Problem(errors));
+        }
+
+        [HttpGet("getOwnParticipationByEvent")]
+        public async Task<IActionResult> GetParticipation([FromQuery] GetOwnParticipationByEventRequestModel request)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (String.IsNullOrEmpty(userId))
+            {
+                return BadRequest("User not found!");
+            }
+
+            var command = _mapper.Map<GetOwnParticipationByEventQuery>((new Guid(userId), request));
             ErrorOr<Participation> getParticipationResult = await _mediator.Send(command);
 
             return getParticipationResult.Match(

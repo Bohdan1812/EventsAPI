@@ -11,6 +11,7 @@ using Contracts.Event;
 using Contracts.Event.SubEvent;
 using Domain.EventAggregate;
 using Domain.EventAggregate.Entities;
+using Domain.EventAggregate.ValueObjects;
 using Mapster;
 
 namespace Api.Common.Mapping
@@ -80,6 +81,9 @@ namespace Api.Common.Mapping
                 .Map(dest => dest.OrganizerId, src => src.OrganizerId.Value)
                 .Map(dest => dest.StartDateTime, src => src.StartDateTime)
                 .Map(dest => dest.EndDateTime, src => src.EndDateTime);
+
+            config.NewConfig<Link, LinkResponse>()
+                .Map(dest => dest.Link, src => src.Value);
 
             config.NewConfig<SubEvent, SubEventResponse>()
                 .Map(dest => dest.SubEventId, src => src.Id.Value);

@@ -74,6 +74,11 @@ namespace Infrastructure.Persistence.Repositories
 
             return participation;
         }
+
+        public async Task<Participation?> GetParticipationByUserEvent(UserId userId, EventId eventId)
+        {
+            return await _dbContext.Participations.FirstOrDefaultAsync(p => p.EventId == eventId && p.UserId == userId);
+        }
     }
 }
 

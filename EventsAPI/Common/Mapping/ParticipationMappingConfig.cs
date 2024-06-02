@@ -2,6 +2,7 @@
 using Application.Participations.Commands.AddParticipationFromJoinRequest;
 using Application.Participations.Commands.RemoveOwnParticipation;
 using Application.Participations.Commands.RemoveParticipationAsOrganizer;
+using Application.Participations.Queries.GetOwnParticipationByEvent;
 using Application.Participations.Queries.GetOwnParticipations;
 using Application.Participations.Queries.GetParticipation;
 using Application.Participations.Queries.GetParticipationsByEvent;
@@ -46,6 +47,10 @@ namespace Api.Common.Mapping
                 .Map(dest => dest.Id, src => src.Id.Value)
                 .Map(dest => dest.UserId, src => src.UserId.Value)
                 .Map(dest => dest.EventId, src => src.EventId.Value);
+
+            config.NewConfig<(Guid ApplicationUserId, GetOwnParticipationByEventRequestModel Request), GetOwnParticipationByEventQuery>()
+                .Map(dest => dest.ApplicationUserId, src => src.ApplicationUserId)
+                .Map(dest => dest.EventId, src => src.Request.EventId);
         }
     }
 }

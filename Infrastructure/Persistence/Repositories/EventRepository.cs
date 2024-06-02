@@ -32,6 +32,7 @@ namespace Infrastructure.Persistence.Repositories
             return await _dbContext.Events
                 .Include(e => e.Invites)
                 .Include(e => e.JoinRequests)
+                .Include(e => e.Participations)
                 .FirstOrDefaultAsync(e => e.Id == eventId);
         }
 

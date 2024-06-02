@@ -1,6 +1,7 @@
 ﻿using Application.Messages.Commands.AddMessage;
 using Application.Messages.Commands.DeleteMessage;
 using Application.Messages.Commands.UpdateMessage;
+using Application.Messages.Dto;
 using Application.Messages.Queries.GetEventMessages;
 using Application.Messages.Queries.GetMessage;
 using Contracts.Message;
@@ -102,7 +103,7 @@ namespace Api.Controllers
         }
 
 
-        [HttpPut("getEventMessages")]
+        [HttpGet("getEventMessages")]
         public async Task<IActionResult> GetEventMessages([FromQuery] GetEventMessagesRequestModel request)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -113,10 +114,10 @@ namespace Api.Controllers
             }
 
             var command = _mapper.Map<GetEventMessagesQuery>((new Guid(userId), request));
-            ErrorOr<List<Message>> getEventsResult = await _mediator.Send(command);
+            ErrorOr<List<MessageResponseDto>> getEventsResult = await _mediator.Send(command);
 
             return getEventsResult.Match(
-                result => Ok(result.Adapt<MessageResponse>()),
+                result => Ok(result),
                 errors => Problem(errors));
         }
 

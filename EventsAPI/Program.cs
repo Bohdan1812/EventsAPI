@@ -1,4 +1,5 @@
 using Api;
+using Api.Hubs;
 using Application;
 using Domain.Common.Models;
 using Infrastructure;
@@ -36,5 +37,6 @@ var app = builder.Build();
     app.UseAuthorization();
     app.UseHttpsRedirection();
     app.MapControllers();
+    app.MapHub<ChatHub>("/Chat");
     app.Run();
 }

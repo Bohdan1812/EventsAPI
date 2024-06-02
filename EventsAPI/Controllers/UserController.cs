@@ -2,6 +2,7 @@
 using Application.Users.Commands.Update;
 using Application.Users.Dto;
 using Application.Users.Queries.GetCurrentUserInfo;
+using Application.Users.Queries.GetUserByParticipation;
 using Application.Users.Queries.GetUserInfo;
 using Contracts.Authentication;
 using Contracts.User;
@@ -93,6 +94,18 @@ namespace Api.Controllers
         public async Task<IActionResult> GetUserInfo([FromQuery] GetUserInfoRequestModel request)
         {
             var query = _mapper.Map<GetUserInfoQuery>(request);
+
+            ErrorOr<UserInfo> getUserResult = await _mediator.Send(query);
+
+            return getUserResult.Match(
+               result => Ok(result),
+               errors => Problem(errors));
+        }
+
+        [HttpGet("getUserByParticipation")]
+        public async Task<IActionResult> GetUserByParticipation([FromQuery] GetUserByParticipationRequestModel request)
+        {
+            var query = _mapper.Map<GetUserByParticipationQuery>(request);
 
             ErrorOr<UserInfo> getUserResult = await _mediator.Send(query);
 

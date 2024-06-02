@@ -11,6 +11,7 @@ namespace Application.Persistence.Repositories
         Task Remove(ParticipationId participationId);
         Task<Participation?> GetFullParticipation(ParticipationId participationId);
         Task<Participation?> GetParticipation(ParticipationId participationId);
+        Task<Participation?> GetParticipationByUserEvent(UserId userId, EventId eventId);
         Task<Participation?> GetParticipation(Guid appUserId, EventId eventId);
         Task<List<Participation>> GetParticipationsByUser(UserId userId);
         Task<List<Participation>> GetParticipationsByEvent(EventId eventId);

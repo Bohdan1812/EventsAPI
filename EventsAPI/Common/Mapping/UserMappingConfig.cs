@@ -4,6 +4,7 @@ using Contracts.User;
 using Application.Users.Queries.GetCurrentUserInfo;
 using Application.Users.Dto;
 using Application.Users.Queries.GetUserInfo;
+using Application.Users.Queries.GetUserByParticipation;
 namespace Api.Common.Mapping
 {
     public class UserMappingConfig : IRegister
@@ -20,6 +21,9 @@ namespace Api.Common.Mapping
 
             config.NewConfig<GetUserInfoRequestModel, GetUserInfoQuery>()
                 .Map(dest => dest.UserId, src => src.UserId);
+
+            config.NewConfig<GetUserByParticipationRequestModel, GetUserByParticipationQuery>()
+                .Map(dest => dest.ParticipationId, src => src.ParticipationId);
         }
     }
 }

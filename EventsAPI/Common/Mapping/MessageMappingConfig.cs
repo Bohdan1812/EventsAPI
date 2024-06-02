@@ -28,7 +28,7 @@ namespace Api.Common.Mapping
                 .Map(dest => dest.ApplicationUserId, src => src.appUserId)
                 .Map(dest => dest.MessageId, src => src.request.MessageId);
 
-            config.NewConfig<(Guid appUserId, GetEventRequestModel request), GetEventMessagesQuery>()
+            config.NewConfig<(Guid appUserId, GetEventMessagesRequestModel request), GetEventMessagesQuery>()
                 .Map(dest => dest.ApplicationUserId, src => src.appUserId)
                 .Map(dest => dest.EventId, src => src.request.EventId);
 
