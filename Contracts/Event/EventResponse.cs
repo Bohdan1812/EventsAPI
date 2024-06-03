@@ -12,5 +12,7 @@ namespace Contracts.Event
         AddressResponse Address,
         LinkResponse Link,
         DateTime StartDateTime,
-        DateTime EndDateTime);
+        DateTime EndDateTime, 
+        bool IsPrivate,
+        bool AllowParticipantsInvite);
 }

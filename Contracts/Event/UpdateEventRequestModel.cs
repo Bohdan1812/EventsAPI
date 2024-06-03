@@ -7,6 +7,8 @@
         DateTime StartDateTime,
         DateTime EndDateTime,
         AddressRequest? AddressRequest,
-        string? Link);
+        string? Link, 
+        bool IsPrivate,
+        bool AllowParticipantsInvite);
  
 }

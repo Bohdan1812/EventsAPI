@@ -6,7 +6,7 @@ using MediatR;
 
 namespace Application.Events.Queries.GetAllUserEvents
 {
-    public class GetAllUserEventsQueryHandler : IRequestHandler<GetUserEventsQuery, ErrorOr<List<Event>>>
+    public class GetAllUserEventsQueryHandler : IRequestHandler<GetAllUserEventsQuery, ErrorOr<List<Event>>>
     {
         private readonly IUserRepository _userRepository;
         private readonly IEventRepository _eventRepository;
@@ -21,7 +21,7 @@ namespace Application.Events.Queries.GetAllUserEvents
             _userRepository = userRepository;
         }
 
-        public async Task<ErrorOr<List<Event>>> Handle(GetUserEventsQuery request, CancellationToken cancellationToken)
+        public async Task<ErrorOr<List<Event>>> Handle(GetAllUserEventsQuery request, CancellationToken cancellationToken)
         {
             var user = await _userRepository.GetUser(request.ApplicationUserId);
 

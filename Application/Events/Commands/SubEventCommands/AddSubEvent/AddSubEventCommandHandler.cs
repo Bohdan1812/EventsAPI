@@ -7,7 +7,7 @@ using MediatR;
 
 namespace Application.Events.Commands.SubEventCommands.AddSubEvent
 {
-    public class AddSubEventCommandHandler : IRequestHandler<AddSubEventCommand, ErrorOr<string>>
+    public class AddSubEventCommandHandler : IRequestHandler<AddSubEventCommand, ErrorOr<Guid>>
     {
         IEventRepository _eventRepository;
 
@@ -19,7 +19,7 @@ namespace Application.Events.Commands.SubEventCommands.AddSubEvent
             _organizerRepository = organizerRepository;
         }
 
-        public async Task<ErrorOr<string>> Handle(AddSubEventCommand request, CancellationToken cancellationToken)
+        public async Task<ErrorOr<Guid>> Handle(AddSubEventCommand request, CancellationToken cancellationToken)
         {
             var organizer = await _organizerRepository.GetOrganizer(request.ApplicationUserId);
 
@@ -48,8 +48,8 @@ namespace Application.Events.Commands.SubEventCommands.AddSubEvent
                 newSubEvent = new SubEvent(
                     request.Name,
                     description,
-                    request.StartDateTime,
-                    request.EndDateTime);
+                    request.StartDateTime.ToUniversalTime(),
+                    request.EndDateTime.ToUniversalTime());
             }
             catch (Exception ex)
             {
@@ -68,9 +68,9 @@ namespace Application.Events.Commands.SubEventCommands.AddSubEvent
 
             @event = await _eventRepository.GetEvent(eventId);
 
-                if (@event is not null && 
-                    @event.SubEvents.Contains(newSubEvent))
-                    return "SubEvent added Successfully!";
+            if (@event is not null &&
+                @event.SubEvents.Contains(newSubEvent))
+                return newSubEvent.Id.Value;
 
             return EventError.SubEventError.SubEventNotAddedDb;
         }

@@ -12,7 +12,9 @@ namespace Application.Events.Commands.Create
         DateTime StartDateTime,
         DateTime EndDateTime,
         AddressCommand Address,
-        LinkCommand Link) : IRequest<ErrorOr<string>>;
+        LinkCommand Link,
+        bool IsPrivate,
+        bool AllowParticipantsInvite) : IRequest<ErrorOr<string>>;
 
     public record SubEventCommand(
         string Name,

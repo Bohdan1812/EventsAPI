@@ -34,6 +34,15 @@ namespace Application.Events.Commands.Update
                 .WithMessage("Event end datetime is required!")
                 .GreaterThan(e => e.StartDateTime)
                 .WithMessage("Event's end datetime must be greater then start datetime!");
+
+            RuleFor(e => e.IsPrivate)
+                .NotNull()
+                .WithMessage("Is private value is required!");
+
+            RuleFor(e => e.AllowParticipantsInvite)
+                .NotNull()
+                .WithMessage("Allow participants to invite value is required!");
+
         }
         private void SetEventAddressRules()
         {

@@ -51,8 +51,8 @@ namespace Application.Events.Commands.SubEventCommands.UpdateSubEvent
                 updatedSubEvent.Update(
                     request.Name,
                     description,
-                    request.StartDateTime,
-                    request.EndDateTime);
+                    request.StartDateTime.ToUniversalTime(),
+                    request.EndDateTime.ToUniversalTime());
             }
             catch(Exception ex)
             {

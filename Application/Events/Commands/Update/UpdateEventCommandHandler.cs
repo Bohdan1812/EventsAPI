@@ -57,10 +57,12 @@ namespace Application.Events.Commands.Update
             {
                 @event.Update(request.Name,
                     description,
-                    request.StartDateTime,
-                    request.EndDateTime,
+                    request.StartDateTime.ToUniversalTime() ,
+                    request.EndDateTime.ToUniversalTime(),
                     address,
-                    link);
+                    link,
+                    request.IsPrivate,
+                    request.AllowParticipantsInvite);
 
                 await _eventRepository.Update(@event);
             }
@@ -74,10 +76,12 @@ namespace Application.Events.Commands.Update
                 @event.Id == eventId &&
                 @event.Name == request.Name &&
                 @event.Description == description &&
-                @event.StartDateTime == request.StartDateTime &&
-                @event.EndDateTime == request.EndDateTime &&
+                @event.StartDateTime == request.StartDateTime.ToUniversalTime() &&
+                @event.EndDateTime == request.EndDateTime.ToUniversalTime() &&
                 @event.Address == address &&
-                @event.Link == link)
+                @event.Link == link && 
+                @event.IsPrivate == request.IsPrivate &&
+                @event.AllowParticipantsInvite == request.AllowParticipantsInvite)
                 return "Event updated successfully!";
 
             return EventError.EventNotUpdated;

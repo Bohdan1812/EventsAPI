@@ -1,13 +1,16 @@
 ﻿using Application.Users.Commands.Delete;
 using Application.Users.Commands.Update;
 using Application.Users.Dto;
+using Application.Users.Queries.FindUsers;
 using Application.Users.Queries.GetCurrentUserInfo;
 using Application.Users.Queries.GetUserByParticipation;
 using Application.Users.Queries.GetUserInfo;
 using Contracts.Authentication;
 using Contracts.User;
 using Domain.Common.Models;
+using Domain.UserAggregate;
 using ErrorOr;
+using Mapster;
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
@@ -112,6 +115,38 @@ namespace Api.Controllers
             return getUserResult.Match(
                result => Ok(result),
                errors => Problem(errors));
+        }
+
+        [HttpGet("findUsers")]
+        public async Task<IActionResult> FindUsers([FromQuery] string? email, [FromQuery] string? firstName, [FromQuery] string? lastName)
+        {
+            var query = _mapper.Map<FindUsersQuery>(new FindUsersRequestModel(email, firstName, lastName));
+
+            ErrorOr<List<User>> getUserResult = await _mediator.Send(query);
+
+            /*return getUserResult.Match(
+               result => Ok(result.Adapt<List<UserInfoResponse>>()),
+               errors => Problem(errors));*/
+
+            if (getUserResult.IsError)
+            {
+                var errors = getUserResult.Errors;
+                return Problem(errors);
+            }
+            else
+            {
+                var result = getUserResult.Value;
+
+                List<UserInfoResponse> mappedResult = new List<UserInfoResponse>();
+
+
+                foreach (var user in result)
+                {
+                    mappedResult.Add(new UserInfoResponse(user.Id.Value, user.FirstName, user.LastName, user.ApplicationUser.Email));
+                }
+
+                return Ok(mappedResult);
+            }
         }
     }
 }

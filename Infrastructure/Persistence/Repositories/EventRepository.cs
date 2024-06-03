@@ -22,6 +22,16 @@ namespace Infrastructure.Persistence.Repositories
             await _dbContext.SaveChangesAsync();
         }
 
+        public async Task<List<Event>> FindEvents(string findEventsQuery, DateTime startDateTime, DateTime endDateTime)
+        {
+            return await _dbContext.Events
+            .Where(e => !e.IsPrivate)
+            .Where(e => e.StartDateTime >= startDateTime && e.EndDateTime <= endDateTime)
+            .Where(e => EF.Functions.Like(e.Name, $"%{findEventsQuery}%")
+                || (e.Description != null && EF.Functions.Like(e.Description, $"%{findEventsQuery}%")))
+            .ToListAsync();
+        }
+
         public async Task<Event?> GetEvent(EventId eventId)
         {
             return await _dbContext.Events.FindAsync(eventId);

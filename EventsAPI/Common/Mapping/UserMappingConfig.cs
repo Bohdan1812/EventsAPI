@@ -5,6 +5,8 @@ using Application.Users.Queries.GetCurrentUserInfo;
 using Application.Users.Dto;
 using Application.Users.Queries.GetUserInfo;
 using Application.Users.Queries.GetUserByParticipation;
+using Application.Users.Queries.FindUsers;
+using Domain.UserAggregate;
 namespace Api.Common.Mapping
 {
     public class UserMappingConfig : IRegister
@@ -24,6 +26,18 @@ namespace Api.Common.Mapping
 
             config.NewConfig<GetUserByParticipationRequestModel, GetUserByParticipationQuery>()
                 .Map(dest => dest.ParticipationId, src => src.ParticipationId);
+
+            config.NewConfig<FindUsersRequestModel, FindUsersQuery>()
+                 .Map(dest => dest.Email, src => src.Email)
+                 .Map(dest => dest.FirstName, src => src.FirstName)
+                 .Map(dest => dest.LastName, src => src.LastName);
+
+            /*config.NewConfig<User, UserInfoResponse>()
+                .Map(dest => dest.Id, src => src.Id.Value)
+                .Map(dest => dest.Email, src => src.ApplicationUser.Email)
+                .Map(dest => dest.FirstName, src => src.FirstName)
+                .Map(dest => dest.LastName, src => src.LastName);*/
+
         }
     }
 }

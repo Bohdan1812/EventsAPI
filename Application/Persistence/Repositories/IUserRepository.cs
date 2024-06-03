@@ -9,6 +9,8 @@ namespace Application.Persistence.Repositories
         Task<User?> GetUser(UserId userId);
         Task<User?> GetFullUser(UserId userId);
 
+        Task<List<User>> FindUsers(string email, string firstName, string secondName);
+
         Task Add(User user);
 
         Task Remove(UserId userId);

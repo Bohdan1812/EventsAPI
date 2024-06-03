@@ -1,11 +1,10 @@
 ﻿using Domain.EventAggregate;
 using ErrorOr;
 using MediatR;
-using System.Reflection;
 
 namespace Application.Events.Queries.GetAllUserEvents
 {
-    public record GetUserEventsQuery(
+    public record GetAllUserEventsQuery(
         Guid ApplicationUserId,
         DateTime StartDateTime) : IRequest<ErrorOr<List<Event>>>;
 }

@@ -10,6 +10,7 @@ namespace Application.Persistence.Repositories
     {
         Task<Event?> GetEvent(EventId eventId);
         Task<Event?> GetFullEvent(EventId eventId);
+        Task<List<Event>> FindEvents(string findEventsQuery, DateTime startDateTime, DateTime EndDateTime);
         Task<List<Event>> GetOrganizerEvents(OrganizerId organizerId);
         Task<List<Event>> GetUserEvents(UserId userId);
         Task Add(Event @event);

@@ -4,11 +4,13 @@ using Application.Events.Commands.SubEventCommands.AddSubEvent;
 using Application.Events.Commands.SubEventCommands.RemoveSubEvent;
 using Application.Events.Commands.SubEventCommands.UpdateSubEvent;
 using Application.Events.Commands.Update;
+using Application.Events.Queries.FindEvents;
 using Application.Events.Queries.GetAllUserEvents;
 using Application.Events.Queries.GetEvent;
 using Application.Events.Queries.GetUserEvents;
 using Contracts.Event;
 using Contracts.Event.SubEvent;
+using Domain.EventAggregate;
 using ErrorOr;
 using Mapster;
 using MapsterMapper;
@@ -184,9 +186,29 @@ namespace Api.Controllers
                 return BadRequest("User not found!");
             }
 
-            var command = _mapper.Map<GetUserEventsQuery>((new Guid(userId), request));
+            var command = _mapper.Map<GetAllUserEventsQuery>((new Guid(userId), request));
 
-            var result = await _mediator.Send(command);
+            ErrorOr<List<Event>> result = await _mediator.Send(command);
+
+            return result.Match(
+                result => Ok(result.Adapt<List<EventResponse>>()),
+                errors => Problem(errors));
+
+        }
+
+        [HttpGet("findEvents")]
+        public async Task<IActionResult> FindEvents([FromQuery] FindEventsRequestModel request)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (String.IsNullOrEmpty(userId))
+            {
+                return BadRequest("User not found!");
+            }
+
+            var command = _mapper.Map<FindEventsQuery>(request);
+
+            ErrorOr<List<Event>> result = await _mediator.Send(command);
 
             return result.Match(
                 result => Ok(result.Adapt<List<EventResponse>>()),

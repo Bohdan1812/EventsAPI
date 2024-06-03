@@ -2,7 +2,7 @@
 
 namespace Application.Events.Queries.GetAllUserEvents
 {
-    public class GetAllUserEventsQueryValidator : AbstractValidator<GetUserEventsQuery>
+    public class GetAllUserEventsQueryValidator : AbstractValidator<GetAllUserEventsQuery>
     {
         public GetAllUserEventsQueryValidator() 
         {

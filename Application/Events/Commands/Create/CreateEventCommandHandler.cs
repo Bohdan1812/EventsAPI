@@ -73,15 +73,17 @@ namespace Application.Events.Commands.Create
                 request.Name,
                 description,
                 organizer,
-                request.StartDateTime,
-                request.EndDateTime,
+                request.StartDateTime.ToUniversalTime(),
+                request.EndDateTime.ToUniversalTime(),
                 request.SubEvents.ConvertAll(subEvent => new SubEvent(
                     subEvent.Name,
                     subEvent.Description,
                     subEvent.StartDateTime,
                     subEvent.EndDateTime)),
                 address,
-                link);
+                link,
+                request.IsPrivate,
+                request.AllowParticipantsInvite);
             }
 
             catch (Exception ex)

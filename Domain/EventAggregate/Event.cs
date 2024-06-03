@@ -71,6 +71,10 @@ namespace Domain.EventAggregate
 
         public DateTime UpdatedDateTime { get; private set; }
 
+        public bool IsPrivate { get; private set; }
+
+        public bool AllowParticipantsInvite { get; private set; }
+
         public Event(
             EventId eventId,
             string name,
@@ -80,7 +84,9 @@ namespace Domain.EventAggregate
             DateTime endDateTime,
             List<SubEvent> subEvents,
             Address? address,
-            Link? link)
+            Link? link,
+            bool isPrivate,
+            bool allowParticipantsInvite)
             : base(eventId)
         {
             if (address is null && link is null)
@@ -107,6 +113,8 @@ namespace Domain.EventAggregate
             _subEvents = subEvents;
             Address = address;
             Link = link;
+            IsPrivate = isPrivate;
+            AllowParticipantsInvite = allowParticipantsInvite;
             CreatedDateTime = DateTime.UtcNow;
             UpdatedDateTime = DateTime.UtcNow;
         }
@@ -163,7 +171,9 @@ namespace Domain.EventAggregate
             DateTime startDateTime,
             DateTime endDateTime,
             Address? address,
-            Link? link)
+            Link? link,
+            bool isPrivate,
+            bool allowParticipantsInvite)
         {
             Name = name;
             Description = description;
@@ -172,6 +182,8 @@ namespace Domain.EventAggregate
             Address = address;
             Link = link;
             UpdatedDateTime = DateTime.UtcNow;
+            IsPrivate = isPrivate;
+            AllowParticipantsInvite = allowParticipantsInvite;
         }    
     }
 }

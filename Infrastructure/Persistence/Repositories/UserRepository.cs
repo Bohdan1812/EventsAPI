@@ -2,6 +2,8 @@
 using Domain.UserAggregate;
 using Domain.UserAggregate.ValueObjects;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text.RegularExpressions;
 
 namespace Infrastructure.Persistence.Repositories
 {
@@ -16,6 +18,36 @@ namespace Infrastructure.Persistence.Repositories
         {
             _dbContext.Add(user);        
             await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task<List<User>> FindUsers(string email, string firstName, string lastName)
+        {
+            if (!email.IsNullOrEmpty() && IsEmail(email))
+                return await _dbContext.DomainUsers
+                    .Include(u => u.ApplicationUser)
+                    .Where(u => u.ApplicationUser.Email == email).ToListAsync();
+            else 
+            {
+                if (firstName.IsNullOrEmpty() && !lastName.IsNullOrEmpty())
+                    return await _dbContext.DomainUsers
+                        .Include(u => u.ApplicationUser)
+                        .Where(u => u.LastName == lastName).ToListAsync();
+                else if (!firstName.IsNullOrEmpty() && lastName.IsNullOrEmpty())
+                    return await  _dbContext.DomainUsers
+                        .Include(u => u.ApplicationUser)
+                        .Where(u => u.FirstName == firstName).ToListAsync();
+                else
+                    return await _dbContext.DomainUsers
+                        .Include(u => u.ApplicationUser)
+                        .Where(u => u.LastName == lastName
+                        && u.FirstName == firstName).ToListAsync();
+            }
+        }
+
+        static bool IsEmail(string word)
+        {
+            // Use a simple regex pattern to check if the word resembles an email address
+            return Regex.IsMatch(word, @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$");
         }
 
         public async Task<User?> GetFullUser(UserId userId)

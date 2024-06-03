@@ -29,6 +29,9 @@ namespace Domain.JoinRequestAggregate
         public JoinRequest(JoinRequestId joinRequestId, User user, Event @event)
             : base(joinRequestId)
         {
+            if (@event.IsPrivate)
+                throw new EventIsPrivateException();
+
             if (@event.Invites.FirstOrDefault(i => i.UserId == user.Id) is not null)
                 throw new InviteExistException();
 

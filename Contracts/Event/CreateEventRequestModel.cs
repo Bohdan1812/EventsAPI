@@ -7,7 +7,9 @@
         DateTime EndDateTime,
         List<SubEventRequest> SubEvents,
         AddressRequest? AddressRequest,
-        string? Link);
+        string? Link,
+        bool IsPrivate,
+        bool AllowParticipantsInvite);
 
     public record SubEventRequest(
         string Name,

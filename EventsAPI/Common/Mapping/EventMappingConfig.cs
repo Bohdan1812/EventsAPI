@@ -5,6 +5,7 @@ using Application.Events.Commands.SubEventCommands.AddSubEvent;
 using Application.Events.Commands.SubEventCommands.RemoveSubEvent;
 using Application.Events.Commands.SubEventCommands.UpdateSubEvent;
 using Application.Events.Commands.Update;
+using Application.Events.Queries.FindEvents;
 using Application.Events.Queries.GetAllUserEvents;
 using Application.Events.Queries.GetEvent;
 using Contracts.Event;
@@ -29,7 +30,9 @@ namespace Api.Common.Mapping
                 .Map(dest => dest.Address, src => src.Item2.AddressRequest)
                 .Map(dest => dest.Link, src => new Application.Events.Commands.
                     Create.LinkCommand(src.Item2.Link))
-                .Map(dest => dest.SubEvents, src => src.Item2.SubEvents);
+                .Map(dest => dest.SubEvents, src => src.Item2.SubEvents)
+                .Map(dest => dest.IsPrivate, src => src.Item2.IsPrivate)
+                .Map(dest => dest.AllowParticipantsInvite, src => src.Item2.AllowParticipantsInvite);
 
             config.NewConfig<GetEventRequestModel, GetEventQuery>()
                 .Map(dest => dest.EventId, src => src.EventId);
@@ -47,7 +50,9 @@ namespace Api.Common.Mapping
                 .Map(dest => dest.EndDateTime, src => src.Item2.EndDateTime)
                 .Map(dest => dest.Address, src => src.Item2.AddressRequest)
                 .Map(dest => dest.Link, src => new Application.Events.Commands.
-                    Update.LinkCommand(src.Item2.Link));
+                    Update.LinkCommand(src.Item2.Link))
+                .Map(dest => dest.IsPrivate, src => src.Item2.IsPrivate)
+                .Map(dest => dest.AllowParticipantsInvite, src => src.Item2.AllowParticipantsInvite);
 
             config.NewConfig<(Guid appUserId, AddSubEventRequestModel request), AddSubEventCommand>()
                 .Map(dest => dest.ApplicationUserId, src => src.appUserId)
@@ -80,7 +85,9 @@ namespace Api.Common.Mapping
                 .Map(dest => dest.Address, src => src.Address)
                 .Map(dest => dest.OrganizerId, src => src.OrganizerId.Value)
                 .Map(dest => dest.StartDateTime, src => src.StartDateTime)
-                .Map(dest => dest.EndDateTime, src => src.EndDateTime);
+                .Map(dest => dest.EndDateTime, src => src.EndDateTime)
+                .Map(dest => dest.IsPrivate, src => src.IsPrivate)
+                .Map(dest => dest.AllowParticipantsInvite, src => src.AllowParticipantsInvite);
 
             config.NewConfig<Link, LinkResponse>()
                 .Map(dest => dest.Link, src => src.Value);
@@ -88,9 +95,14 @@ namespace Api.Common.Mapping
             config.NewConfig<SubEvent, SubEventResponse>()
                 .Map(dest => dest.SubEventId, src => src.Id.Value);
 
-            config.NewConfig<(Guid ApplicationUserId, GetUserEventsRequestModel request), GetUserEventsQuery>()
+            config.NewConfig<(Guid ApplicationUserId, GetUserEventsRequestModel request), GetAllUserEventsQuery>()
                 .Map(dest => dest.ApplicationUserId, src => src.ApplicationUserId)
                 .Map(dest => dest.StartDateTime, src => src.request.DateTime);
+
+            config.NewConfig<FindEventsRequestModel, FindEventsQuery>()
+                .Map(dest => dest.EventSearchQuery, src => src.EventSearchQuery)
+                .Map(dest => dest.StartDateTime, src => src.StartDateTime)
+                .Map(dest => dest.EndDateTime, src => src.EndDateTime);
         }
     }
 }

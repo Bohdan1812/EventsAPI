@@ -11,5 +11,5 @@ namespace Application.Events.Commands.SubEventCommands.AddSubEvent
         string? Description,
         DateTime StartDateTime,
         DateTime EndDateTime
-        ) : IRequest<ErrorOr<string>>;
+        ) : IRequest<ErrorOr<Guid>>;
 }

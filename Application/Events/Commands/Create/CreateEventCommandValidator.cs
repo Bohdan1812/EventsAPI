@@ -31,6 +31,14 @@ namespace Application.Events.Commands.Create
             RuleFor(e => e.appUserId)
                 .NotEmpty()
                 .WithMessage("ApplicationUser Id is required!");
+
+            RuleFor(e => e.IsPrivate)
+                .NotNull()
+                .WithMessage("Is private value is required!");
+
+            RuleFor(e => e.AllowParticipantsInvite)
+                .NotNull()
+                .WithMessage("Allow participants to invite value is required!");
         }
         private void SetEventAddressRules()
         {
@@ -81,6 +89,7 @@ namespace Application.Events.Commands.Create
             .WithMessage("SubEvent DateTime Start must be greater or equal than " +
             "Event StartDateTime and SubEvent endDateTime less than Event DateTime End.");
         }
+
     }
 }
 
