@@ -1,5 +1,4 @@
 ﻿using Application.Invites.Commands.AddInvite;
-using Application.Invites.Commands.AddInviteAsParticipation;
 using Application.Invites.Commands.DeleteOwnInvite;
 using Application.Invites.Commands.RemoveAsOrganizer;
 using Application.Invites.Queries.GetEventInvites;
@@ -49,24 +48,7 @@ namespace Api.Controllers
                 result => Ok(result),
                 errors => Problem(errors));
         }
-
-        [HttpPut("addInviteAsParticipant")]
-        public async Task<IActionResult> AddInviteAsParticipant(AddInviteAsParticipantRequestModel request)
-        {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            if (String.IsNullOrEmpty(userId))
-            {
-                return BadRequest("User not found!");
-            }
-
-            var command = _mapper.Map<AddInviteAsParticipationCommand>((new Guid(userId), request));
-            ErrorOr<string> addInviteResult = await _mediator.Send(command);
-
-            return addInviteResult.Match(
-                result => Ok(result),
-                errors => Problem(errors));
-        }
+       
 
         [HttpDelete("removeOwnInvite")]
         public async Task<IActionResult> RemoveOwnInvite(RemoveInviteRequestModel request)

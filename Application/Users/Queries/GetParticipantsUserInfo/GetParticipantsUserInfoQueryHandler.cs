@@ -36,6 +36,10 @@ namespace Application.Users.Queries.GetParticipantsUserInfo
             foreach(var participation in participations)
             {
                 var fullUser = await _userRepository.GetFullUser(participation.UserId);
+
+                if (fullUser is null)
+                    return UserError.UserNotFound;
+
                 users.Add(new UserInfo(fullUser.Id.Value, fullUser.FirstName, fullUser.LastName, fullUser.ApplicationUser.Email)); 
             }
 

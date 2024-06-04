@@ -1,5 +1,4 @@
 ﻿using Application.Invites.Commands.AddInvite;
-using Application.Invites.Commands.AddInviteAsParticipation;
 using Application.Invites.Commands.DeleteOwnInvite;
 using Application.Invites.Commands.RemoveAsOrganizer;
 using Application.Invites.Queries.GetEventInvites;
@@ -16,11 +15,6 @@ namespace Api.Common.Mapping
         public void Register(TypeAdapterConfig config)
         {
             config.NewConfig<(Guid appUserId, AddInviteRequestModel request), AddInviteCommand>()
-                .Map(dest => dest.ApplicationUserId, src => src.appUserId)
-                .Map(dest => dest.EventId, src => src.request.EventId)
-                .Map(dest => dest.UserId, src => src.request.UserId);
-
-            config.NewConfig<(Guid appUserId, AddInviteAsParticipantRequestModel request), AddInviteAsParticipationCommand>()
                 .Map(dest => dest.ApplicationUserId, src => src.appUserId)
                 .Map(dest => dest.EventId, src => src.request.EventId)
                 .Map(dest => dest.UserId, src => src.request.UserId);
