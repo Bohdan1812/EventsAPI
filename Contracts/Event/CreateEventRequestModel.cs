@@ -18,9 +18,7 @@
         DateTime EndDateTime);
 
     public record AddressRequest(
-        string Country,
-        string? State,
-        string City,
-        string? Street,
-        string? House);
+        string AddressName,
+        double Longitude,
+        double Latitude);
 }

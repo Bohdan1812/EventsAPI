@@ -7,6 +7,7 @@ using Application.Users.Queries.GetUserInfo;
 using Application.Users.Queries.GetUserByParticipation;
 using Application.Users.Queries.FindUsers;
 using Domain.UserAggregate;
+using Application.Users.Queries.GetParticipantsUserInfo;
 namespace Api.Common.Mapping
 {
     public class UserMappingConfig : IRegister
@@ -31,6 +32,10 @@ namespace Api.Common.Mapping
                  .Map(dest => dest.Email, src => src.Email)
                  .Map(dest => dest.FirstName, src => src.FirstName)
                  .Map(dest => dest.LastName, src => src.LastName);
+
+            config.NewConfig<(Guid ApplicationUser, GetParticipantsUserInfoRequestModel request), GetParticipantsUserInfoQuery>()
+                .Map(dest => dest.ApplicatinUserId, src => src.ApplicationUser)
+                .Map(dest => dest.EventId, src => src.request.EventId);
 
             /*config.NewConfig<User, UserInfoResponse>()
                 .Map(dest => dest.Id, src => src.Id.Value)

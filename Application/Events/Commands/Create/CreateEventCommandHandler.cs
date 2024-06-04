@@ -46,15 +46,19 @@ namespace Application.Events.Commands.Create
             }
 
             Address? address = null;
-
-            if (request.Address is not null)
+            try
             {
-                address = new Address(
-                    request.Address.House,
-                    request.Address.Street,
-                    request.Address.City,
-                    request.Address.State,
-                    request.Address.Country);
+                if (request.Address is not null)
+                {
+                    address = new Address(
+                        request.Address.AddressName,
+                        request.Address.Longitude,
+                        request.Address.Latitude);
+                }
+            }
+            catch(Exception ex)
+            {
+                return EventError.EventNotInitialized(ex.Message);
             }
 
             Link? link = null;

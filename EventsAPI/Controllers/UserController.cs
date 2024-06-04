@@ -3,6 +3,7 @@ using Application.Users.Commands.Update;
 using Application.Users.Dto;
 using Application.Users.Queries.FindUsers;
 using Application.Users.Queries.GetCurrentUserInfo;
+using Application.Users.Queries.GetParticipantsUserInfo;
 using Application.Users.Queries.GetUserByParticipation;
 using Application.Users.Queries.GetUserInfo;
 using Contracts.Authentication;
@@ -111,6 +112,25 @@ namespace Api.Controllers
             var query = _mapper.Map<GetUserByParticipationQuery>(request);
 
             ErrorOr<UserInfo> getUserResult = await _mediator.Send(query);
+
+            return getUserResult.Match(
+               result => Ok(result),
+               errors => Problem(errors));
+        }
+
+        [HttpGet("getParticipantsUserInfo")]
+        public async Task<IActionResult> GetParticipantsUserInfo([FromQuery] GetParticipantsUserInfoRequestModel request)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (String.IsNullOrEmpty(userId))
+            {
+                return BadRequest("User not found!");
+            }
+
+            var query = _mapper.Map<GetParticipantsUserInfoQuery>((new Guid(userId), request));
+
+            ErrorOr<List<UserInfo>> getUserResult = await _mediator.Send(query);
 
             return getUserResult.Match(
                result => Ok(result),

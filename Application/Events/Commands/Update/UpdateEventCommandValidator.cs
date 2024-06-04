@@ -54,13 +54,17 @@ namespace Application.Events.Commands.Update
             RuleFor(e => e.Address)
                 .ChildRules(address =>
                 {
-                    address.RuleFor(a => a.Country)
+                    address.RuleFor(a => a.AddressName)
                     .NotEmpty()
-                    .WithMessage("Address requires country!");
+                    .WithMessage("Address name is required!");
 
-                    address.RuleFor(a => a.City)
+                    address.RuleFor(a => a.Longitude)
                     .NotEmpty()
-                    .WithMessage("Address requires city!");
+                    .WithMessage("Longitude is required!");
+
+                    address.RuleFor(a => a.Latitude)
+                    .NotEmpty()
+                    .WithMessage("Latitude is required!");
                 })
                 .When(e => e.Address is not null);
         }

@@ -26,7 +26,6 @@ namespace Application.Events.Commands.Update
                 return OrganizerError.OrganizerNotFound;
 
             var eventId = EventId.Create(request.EventId);
-
             var @event = await _eventRepository.GetEvent(eventId);
 
             if (@event is null)
@@ -42,13 +41,18 @@ namespace Application.Events.Commands.Update
             if (request.Description is not null)
                 description = request.Description;
 
-            if (request.Address is not null)
-                address = new Address(
-                    request.Address.House,
-                    request.Address.Street,
-                    request.Address.City,
-                    request.Address.State,
-                    request.Address.Country);
+            try
+            {
+                if (request.Address is not null)
+                    address = new Address(
+                        request.Address.AddressName,
+                        request.Address.Longitude,
+                        request.Address.Latitude);
+            }
+            catch(Exception ex)
+            { 
+                return EventError.EventNotInitialized(ex.Message); 
+            }
 
             if (request.Link is not null)
                 link = new Link(request.Link.Link);

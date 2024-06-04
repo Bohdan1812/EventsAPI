@@ -42,16 +42,12 @@ namespace Infrastructure.Persistence.Configurations
 
             builder.OwnsOne(e => e.Address, address =>
             {
-                address.Property(a => a.Country)
-                    .HasColumnName("Country");
-                address.Property(a => a.State)
-                    .HasColumnName("State");
-                address.Property(a => a.City)
-                    .HasColumnName("City");
-                address.Property(a => a.Street)
-                    .HasColumnName("Street");
-                address.Property(a => a.House)
-                    .HasColumnName("House");
+                address.Property(a => a.AddressName)
+                    .HasColumnName("Address");
+                address.Property(a => a.Longitude)
+                    .HasColumnName("Longitude");
+                address.Property(a => a.Latitude)
+                    .HasColumnName("Latitude");
             });
         }
         private static void ConfigureSubEvents(EntityTypeBuilder<Event> builder)

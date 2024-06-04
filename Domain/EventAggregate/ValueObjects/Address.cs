@@ -1,35 +1,53 @@
 ﻿using Domain.Common.Models;
+using Domain.EventAggregate.Exceptions;
 
 namespace Domain.EventAggregate.ValueObjects
 {
     public sealed class Address : ValueObject
     {
 
-        public Address(string house, string street, string city, string state, string country)
+        public Address(string addressName, double longitude, double latitude)
         {
-            House = house;
-            Street = street;
-            City = city;
-            State = state;
-            Country = country;
+            AddressName = addressName;
+            Longitude = longitude;
+            Latitude = latitude;
         }
-        public string House { get; private set; }
-
-        public string Street { get; private set; }
-
-        public string City { get; private set; }
-
-        public string State { get; private set; }
-
-        public string Country { get; private set; }
-
+        private double latitude;
+        public string AddressName { get; private set; }
+        public double Latitude
+        {
+            get
+            {
+                return latitude;
+            }
+            private set
+            {
+                if (value < -90 || value > 90)
+                    throw new InvalidLatitudeException();
+                else
+                    latitude = value;
+            }
+        }
+        private double longitude;
+        public double Longitude
+        {
+            get
+            {
+                return longitude;
+            }
+            private set 
+            {
+                if(value < -180 || value > 180)
+                    throw new InvalidLongitudeException();  
+                else 
+                    longitude = value;
+            }
+        }
         public override IEnumerable<object> GetEqualityComponents()
         {
-            yield return Country;
-            yield return State;
-            yield return City;
-            yield return Street;
-            yield return House;
+            yield return AddressName;
+            yield return Longitude;
+            yield return Latitude;
         }
     }
 }

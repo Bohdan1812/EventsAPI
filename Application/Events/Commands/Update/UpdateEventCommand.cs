@@ -23,11 +23,9 @@ namespace Application.Events.Commands.Update
         DateTime EndDateTime);
 
     public record AddressCommand(
-        string House,
-        string Street,
-        string City,
-        string State,
-        string Country);
+        string AddressName,
+        double Longitude,
+        double Latitude);
 
     public record LinkCommand(
         string Link);
