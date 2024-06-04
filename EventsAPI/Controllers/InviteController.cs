@@ -51,7 +51,7 @@ namespace Api.Controllers
        
 
         [HttpDelete("removeOwnInvite")]
-        public async Task<IActionResult> RemoveOwnInvite(RemoveInviteRequestModel request)
+        public async Task<IActionResult> RemoveOwnInvite([FromQuery]RemoveInviteRequestModel request)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 

@@ -29,7 +29,7 @@ namespace Api.Controllers
             _mapper = mapper;
         }
 
-        [HttpPut("addParticicpationByInvite")]
+        [HttpPut("addParticipationByInvite")]
         public async Task<IActionResult> AddParticipationByInvite(AddParticipationByInviteRequestModel request) 
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -47,7 +47,7 @@ namespace Api.Controllers
                 errors => Problem(errors));
         }
 
-        [HttpPut("addParticicpationByJoinRequest")]
+        [HttpPut("addParticipationByJoinRequest")]
         public async Task<IActionResult> AddParticipationByJoinRequest(AddParticipationByJoinRequestRequestModel request)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
