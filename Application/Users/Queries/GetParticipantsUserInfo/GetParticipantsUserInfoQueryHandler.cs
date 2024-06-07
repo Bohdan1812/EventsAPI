@@ -40,7 +40,7 @@ namespace Application.Users.Queries.GetParticipantsUserInfo
                 if (fullUser is null)
                     return UserError.UserNotFound;
 
-                users.Add(new UserInfo(fullUser.Id.Value, fullUser.FirstName, fullUser.LastName, fullUser.ApplicationUser.Email)); 
+                users.Add(new UserInfo(fullUser.Id.Value, fullUser.FirstName, fullUser.LastName, fullUser.ApplicationUser.Email, fullUser.PhotoPath)); 
             }
 
             return users;

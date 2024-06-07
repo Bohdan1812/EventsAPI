@@ -34,7 +34,25 @@ namespace Application.Common.Errors
             code: "Event.NotUpdated",
             description: "Unexpected error occured. This event was not updated in database!");
 
-        
+        public static Error EventPhotoDeleteError(string description) => Error.Failure(
+            code: "Event.PhotoDeleteError",
+            description: description);
+
+        public static Error EventPreviousPhotoNotDeleted => Error.Failure(
+            code: "Event.Photo.PreviousNotDeleted",
+            description: "Previous event photo was not deleted!");
+
+        public static Error EventPhototUploadError(string description) => Error.Failure(
+            code: "Event.Photo.UploadError",
+            description: description);
+
+        public static Error EventPhotoNotUploaded => Error.Failure(
+            code: "Event.Photo.NotUploaded",
+            description: "Event photo was not uploaded");
+
+
+
+
 
         public static class SubEventError
         {

@@ -32,7 +32,8 @@ namespace Application.Users.Queries.GetUserByParticipation
                 participation.User.Id.Value, 
                 participation.User.FirstName,
                 participation.User.LastName,
-                participation.User.ApplicationUser.Email);
+                participation.User.ApplicationUser.Email,
+                participation.User.PhotoPath);
 
             return userInfo;
         }

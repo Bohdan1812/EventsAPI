@@ -50,6 +50,8 @@ namespace Domain.EventAggregate
 
         public DateTime StartDateTime { get; private set; }
 
+        public string? PhotoPath { get; set; }
+
         public DateTime EndDateTime {
             get
             {

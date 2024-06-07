@@ -4,6 +4,7 @@ using Domain.JoinRequestAggregate;
 using Domain.OrganizerAggregate;
 using Domain.ParticipationAggregate;
 using Domain.UserAggregate.ValueObjects;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Domain.UserAggregate
 {
@@ -17,11 +18,10 @@ namespace Domain.UserAggregate
 #pragma warning restore CS8618
         public string FirstName { get; set; } = null!;
         public string LastName { get; set; } = null!;
- 
         public DateTime CreatedDateTime { get; private set; }
         public DateTime UpdatedDateTime { get; private set; }
-
         public Guid ApplicationUserId { get; set; } 
+        public string? PhotoPath { get; set; }
         public ApplicationUser ApplicationUser { get; set; }
 
         private readonly List<Invite> _invites = [];

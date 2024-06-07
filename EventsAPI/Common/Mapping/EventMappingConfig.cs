@@ -48,7 +48,7 @@ namespace Api.Common.Mapping
                 .Map(dest => dest.Description, src => src.Item2.Description)
                 .Map(dest => dest.StartDateTime, src => src.Item2.StartDateTime)
                 .Map(dest => dest.EndDateTime, src => src.Item2.EndDateTime)
-                .Map(dest => dest.Address, src => src.Item2.AddressRequest)
+                .Map(dest => dest.Address, src => src.Item2.Address)
                 .Map(dest => dest.Link, src => new Application.Events.Commands.
                     Update.LinkCommand(src.Item2.Link))
                 .Map(dest => dest.IsPrivate, src => src.Item2.IsPrivate)
@@ -87,7 +87,8 @@ namespace Api.Common.Mapping
                 .Map(dest => dest.StartDateTime, src => src.StartDateTime)
                 .Map(dest => dest.EndDateTime, src => src.EndDateTime)
                 .Map(dest => dest.IsPrivate, src => src.IsPrivate)
-                .Map(dest => dest.AllowParticipantsInvite, src => src.AllowParticipantsInvite);
+                .Map(dest => dest.AllowParticipantsInvite, src => src.AllowParticipantsInvite)
+                .Map(dest => dest.PhotoPath, src => src.PhotoPath);
 
             config.NewConfig<Link, LinkResponse>()
                 .Map(dest => dest.Link, src => src.Value);

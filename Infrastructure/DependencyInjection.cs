@@ -1,7 +1,9 @@
 ﻿using Application.Persistence.Repositories;
+using Application.Persistence.Services;
 using Domain.Common.Models;
 using Infrastructure.Persistence;
 using Infrastructure.Persistence.Repositories;
+using Infrastructure.Persistence.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -40,7 +42,9 @@ namespace Infrastructure
             services.AddScoped<IJoinRequestRepository, JoinRequestRepository>();
             services.AddScoped<IInviteRepository, InviteRepository>();
             services.AddScoped<IParticipationRepository, ParticipationRepository>();
-            services.AddScoped<IMessageRepository, MessageRepository>();  
+            services.AddScoped<IMessageRepository, MessageRepository>();
+            services.AddScoped<IUserPhotoService, UserPhotoService>();    
+            services.AddScoped<IEventPhotoService, EventPhotoService>();
             
             return services;
         }

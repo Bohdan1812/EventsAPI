@@ -1,5 +1,7 @@
-﻿using Application.Events.Commands.Create;
+﻿using Application.Events.Commands.AddEventPhoto;
+using Application.Events.Commands.Create;
 using Application.Events.Commands.Delete;
+using Application.Events.Commands.RemoveEventPhoto;
 using Application.Events.Commands.SubEventCommands.AddSubEvent;
 using Application.Events.Commands.SubEventCommands.RemoveSubEvent;
 using Application.Events.Commands.SubEventCommands.UpdateSubEvent;
@@ -101,7 +103,7 @@ namespace Api.Controllers
         }
 
         [HttpDelete("deleteEvent")]
-        public async Task<IActionResult> DeleteEvent(DeleteEventRequestModel request)
+        public async Task<IActionResult> DeleteEvent([FromQuery]DeleteEventRequestModel request)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -213,7 +215,42 @@ namespace Api.Controllers
             return result.Match(
                 result => Ok(result.Adapt<List<EventResponse>>()),
                 errors => Problem(errors));
+        }
 
+        [HttpPost("uploadPhoto")]
+        public async Task<IActionResult> UploadPhoto(Guid EventId, IFormFile Photo)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (String.IsNullOrEmpty(userId))
+            {
+                return BadRequest("User not found!");
+            }
+
+            var command = new AddEventPhotoCommand(new Guid(userId), EventId, Photo);
+            var result = await _mediator.Send(command);
+
+            return result.Match(
+               result => Ok(result),
+               errors => Problem(errors));
+        }
+
+        [HttpDelete("removePhoto")]
+        public async Task<IActionResult> RemovePhoto([FromQuery]Guid EventId)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (String.IsNullOrEmpty(userId))
+            {
+                return BadRequest("User not found!");
+            }
+
+            var command = new RemoveEventPhotoCommand(new Guid(userId), EventId);
+            var result = await _mediator.Send(command);
+
+            return result.Match(
+               result => Ok(result),
+               errors => Problem(errors));
         }
     }
 }

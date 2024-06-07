@@ -1,8 +1,12 @@
-﻿using Application.Users.Commands.Delete;
+﻿using Application.Events.Commands.SubEventCommands.AddSubEvent;
+using Application.Users.Commands.Delete;
+using Application.Users.Commands.RemoveUserPhoto;
+using Application.Users.Commands.SetUserPhoto;
 using Application.Users.Commands.Update;
 using Application.Users.Dto;
 using Application.Users.Queries.FindUsers;
 using Application.Users.Queries.GetCurrentUserInfo;
+using Application.Users.Queries.GetOrganizerInfo;
 using Application.Users.Queries.GetParticipantsUserInfo;
 using Application.Users.Queries.GetUserByParticipation;
 using Application.Users.Queries.GetUserInfo;
@@ -11,7 +15,6 @@ using Contracts.User;
 using Domain.Common.Models;
 using Domain.UserAggregate;
 using ErrorOr;
-using Mapster;
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
@@ -137,6 +140,18 @@ namespace Api.Controllers
                errors => Problem(errors));
         }
 
+        [HttpGet("getOrganizerInfo")]
+        public async Task<IActionResult> GetOrganizerInfo([FromQuery] Guid OrganizerId)
+        {
+            var query = new GetOrganizerInfoQuery(OrganizerId);
+            var result = await _mediator.Send(query);
+
+            return result.Match(
+               result => Ok(result),
+               errors => Problem(errors));
+
+        }
+
         [HttpGet("findUsers")]
         public async Task<IActionResult> FindUsers([FromQuery] string? email, [FromQuery] string? firstName, [FromQuery] string? lastName)
         {
@@ -167,6 +182,45 @@ namespace Api.Controllers
 
                 return Ok(mappedResult);
             }
+        }
+
+        [HttpPost("uploadPhoto")]
+        public async Task<IActionResult> UploadPhoto(IFormFile photo)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (String.IsNullOrEmpty(userId))
+            {
+                return BadRequest("User not found!");
+            }
+
+            var command = new SetUserPhotoCommand(new Guid(userId), photo);
+
+            var result = await _mediator.Send(command);
+
+            return result.Match(
+               result => Ok(result),
+               errors => Problem(errors));
+        }
+
+        [HttpDelete("removePhoto")]
+        public async Task<IActionResult> RemovePhoto()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (String.IsNullOrEmpty(userId))
+            {
+                return BadRequest("User not found!");
+            }
+
+            var command = new RemoveUserPhotoCommand(new Guid(userId));
+
+            var result = await _mediator.Send(command);
+
+            return result.Match(
+               result => Ok(result),
+               errors => Problem(errors));
+
         }
     }
 }

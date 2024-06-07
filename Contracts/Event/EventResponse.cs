@@ -14,5 +14,6 @@ namespace Contracts.Event
         DateTime StartDateTime,
         DateTime EndDateTime, 
         bool IsPrivate,
-        bool AllowParticipantsInvite);
+        bool AllowParticipantsInvite,
+        string? PhotoPath);
 }

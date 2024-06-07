@@ -27,7 +27,7 @@ namespace Application.Users.Queries.GetCurrentUserInfo
             if (user is null)
                 return UserError.UserNotFound;
 
-            return new UserInfo(user.Id.Value, user.FirstName, user.LastName, user.ApplicationUser.Email);
+            return new UserInfo(user.Id.Value, user.FirstName, user.LastName, user.ApplicationUser.Email, user.PhotoPath);
         }
     }
 }

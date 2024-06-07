@@ -4,6 +4,7 @@ using Application;
 using Domain.Common.Models;
 using Infrastructure;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.FileProviders;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -34,9 +35,22 @@ var app = builder.Build();
 
     //app.UseExceptionHandler("/error");
     app.MapIdentityApi<ApplicationUser>();
+    app.UseAuthentication();
     app.UseAuthorization();
     app.UseHttpsRedirection();
     app.MapControllers();
     app.MapHub<ChatHub>("/Chat");
+    app.UseStaticFiles(new StaticFileOptions
+    {
+        FileProvider = new PhysicalFileProvider(
+            Path.Combine(builder.Environment.ContentRootPath, "UserPhotos")),
+        RequestPath = "/userPhotos"
+    });//Need to confiure authorization
+    app.UseStaticFiles(new StaticFileOptions
+    {
+        FileProvider = new PhysicalFileProvider(
+            Path.Combine(builder.Environment.ContentRootPath, "EventPhotos")),
+        RequestPath = "/eventPhotos"
+    });//Need to confiure authorization
     app.Run();
 }

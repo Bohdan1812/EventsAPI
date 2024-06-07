@@ -63,7 +63,8 @@ namespace Application.Messages.Queries.GetEventMessages
                         author.Id.Value,
                         author.FirstName,
                         author.LastName,
-                        author.ApplicationUser.Email),
+                        author.ApplicationUser.Email,
+                        author.PhotoPath),
                     message.CreatedDateTime,
                     message.UpdatedDateTime));
             }

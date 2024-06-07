@@ -6,7 +6,7 @@
         string? Description,
         DateTime StartDateTime,
         DateTime EndDateTime,
-        AddressRequest? AddressRequest,
+        AddressRequest? Address,
         string? Link, 
         bool IsPrivate,
         bool AllowParticipantsInvite);

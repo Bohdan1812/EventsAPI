@@ -93,7 +93,14 @@ namespace Infrastructure.Persistence.Repositories
 
         public async Task Update(User user)
         {
-            throw new NotImplementedException();
+            var userToUpdate = await GetUser(user.Id);
+
+            if (userToUpdate is not null) 
+            {
+                userToUpdate = user;
+
+                await _dbContext.SaveChangesAsync();
+            }
         }
     }
 }
