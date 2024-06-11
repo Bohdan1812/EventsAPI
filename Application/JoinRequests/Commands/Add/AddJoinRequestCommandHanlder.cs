@@ -30,7 +30,7 @@ namespace Application.JoinRequests.Commands.Add
 
             var eventId = EventId.Create(request.EventId);
 
-            var @event = await _eventRepository.GetEvent(eventId);
+            var @event = await _eventRepository.GetFullEvent(eventId);
 
             if (@event is null)
                 return EventError.EventNotFound;

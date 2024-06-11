@@ -70,7 +70,7 @@ namespace Api.Controllers
         }
 
         [HttpDelete("removeOrganizerInvite")]
-        public async Task<IActionResult> RemoveOrganizerInvite(RemoveInviteRequestModel request)
+        public async Task<IActionResult> RemoveOrganizerInvite([FromQuery]RemoveInviteRequestModel request)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 

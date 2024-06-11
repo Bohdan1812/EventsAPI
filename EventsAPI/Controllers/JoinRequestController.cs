@@ -1,6 +1,7 @@
 ﻿using Application.JoinRequests.Commands.Add;
 using Application.JoinRequests.Commands.RemoveAsOrganizer;
 using Application.JoinRequests.Commands.RemoveOwn;
+using Application.JoinRequests.Queries.GetEventJoinRequests;
 using Application.JoinRequests.Queries.GetJoinRequest;
 using Application.JoinRequests.Queries.GetOrganizerJoinRequests;
 using Application.JoinRequests.Queries.GetOwnJoinRequests;
@@ -102,7 +103,7 @@ namespace Api.Controllers
         }
 
         [HttpDelete("removeOwnJoinRequest")]
-        public async Task<IActionResult> RemoveOwnJoinRequest(RemoveJoinRequestRequestModel request)
+        public async Task<IActionResult> RemoveOwnJoinRequest([FromQuery]RemoveJoinRequestRequestModel request)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -121,7 +122,7 @@ namespace Api.Controllers
         }
 
         [HttpDelete("removeJoinRequestAsOrganizer")]
-        public async Task<IActionResult> RemoveOrganizerJoinRequest(RemoveJoinRequestRequestModel request)
+        public async Task<IActionResult> RemoveOrganizerJoinRequest([FromQuery]RemoveJoinRequestRequestModel request)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -139,5 +140,24 @@ namespace Api.Controllers
                 errors => Problem(errors));
         }
 
+        [HttpGet("getEventJoinRequests")]
+        public async Task<IActionResult> GetEventJoinRequests(Guid eventId)
+        {
+
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (String.IsNullOrEmpty(userId))
+            {
+                return BadRequest("User not found!");
+            }
+
+            var query = new GetEventJoinRequestsQuery(new Guid(userId), eventId);
+
+            var result = await _mediator.Send(query);
+
+            return result.Match(
+                 result => Ok(result.Adapt<List<JoinRequestResponse>>()),
+                errors => Problem(errors));
+        }
     }
 }

@@ -66,7 +66,7 @@ namespace Api.Controllers
         }
 
         [HttpDelete("removeOwnParticipation")]
-        public async Task<IActionResult> RemoveOwnParticipation(RemoveParticipationRequestModel request)
+        public async Task<IActionResult> RemoveOwnParticipation([FromQuery]RemoveParticipationRequestModel request)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 

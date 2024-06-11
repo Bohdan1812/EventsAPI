@@ -40,6 +40,15 @@ namespace Api.Common.Mapping
             config.NewConfig<(Guid appUserId, RemoveJoinRequestRequestModel request), RemoveOrganizerJoinRequestCommand>()
                 .Map(dest => dest.ApplicationUserId, src => src.appUserId)
                 .Map(dest => dest.JoinRequestId, src => src.request.JoinRequestId);
+
+            config.NewConfig<JoinRequest, JoinRequestFullInfoResponse>()
+                .Map(dest => dest.Id, src => src.Id.Value)
+                .Map(dest => dest.Event, src => src.Event)
+                .Map(dest => dest.User, src => src.User);    
+               
+
+
+
         }
     }
 }

@@ -3,5 +3,5 @@
     public record AddressInfo(
         string AddressName,
         double Longitude,
-        string Latitude);
+        double Latitude);
 }
