@@ -26,6 +26,13 @@ var builder = WebApplication.CreateBuilder(args);
 
 var app = builder.Build();
 {
+ 
+    var userPhotosPath = Path.Combine(app.Environment.ContentRootPath, "UserPhotos");
+    var eventPhotosPath = Path.Combine(app.Environment.ContentRootPath, "EventPhotos");
+
+    if (!Directory.Exists(userPhotosPath)) Directory.CreateDirectory(userPhotosPath);
+    if (!Directory.Exists(eventPhotosPath)) Directory.CreateDirectory(eventPhotosPath);
+ 
     // Configure the HTTP request pipeline.
     if (app.Environment.IsDevelopment())
     {

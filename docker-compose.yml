@@ -1,0 +1,46 @@
+services:
+  # =========================================================
+  # 1. КОНТЕНЕР БАЗИ ДАНИХ (PostgreSQL)
+  # =========================================================
+  events-db:
+    image: postgres:16-alpine  # Легковажний офіційний образ Postgres 16 на базі Alpine Linux
+    container_name: events-postgres-db
+    restart: always            # Якщо база впаде, Docker сам її перезапустить
+    environment:
+      POSTGRES_USER: pukas_admin
+      POSTGRES_PASSWORD: super_secret_password
+      POSTGRES_DB: EventsDb
+    ports:
+      - "5432:5432"            # Прокидаємо порт на твій ПК, щоб ти міг підключитися через pgAdmin або Rider
+    volumes:
+      - postgres_data:/var/lib/postgresql/data  # Той самий Docker Volume для безсмертя даних
+    networks:
+      - events-network         # Підключаємо до нашої ізольованої мережі
+
+  # =========================================================
+  # 2. КОНТЕЙНЕР ТВОГО .NET WEB API
+  # =========================================================
+  events-web-api:
+    image: events-api:latest   # Docker візьме твій локальний образ, який ми щойно збирали
+    container_name: events-web-api-app
+    restart: always
+    ports:
+      - "5030:8080"            # Зв'язуємо порт 5030 твого ПК з внутрішнім 8080 у контейнері
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development # Вмикаємо режим розробки, щоб працював Swagger
+      # Перевизначаємо Connection String! Замість localhost пишемо ім'я сервісу бази даних "events-db"
+      - ConnectionStrings__DefaultConnection=Host=events-db;Port=5432;Database=EventsDb;Username=pukas_admin;Password=super_secret_password;
+    networks:
+      - events-network
+    depends_on:
+      - events-db              # Наказує Докеру запускати API лише ПІСЛЯ того, як підніметься база
+
+# =========================================================
+# ОПИС ІНФРАСТРУКТУРИ (Томи та Мережі)
+# =========================================================
+volumes:
+  postgres_data:               # Реєструємо іменований том для PostgreSQL
+
+networks:
+  events-network:              # Реєструємо внутрішню мережу типу "bridge"
+    driver: bridge
