@@ -7,6 +7,7 @@ using Infrastructure.Persistence.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+
 namespace Infrastructure
 {
     public static class DependencyInjection
@@ -29,8 +30,9 @@ namespace Infrastructure
 
             services.AddDbContext<EventAppDbContext>(options =>
                 //options.UseSqlServer(dbConnection));
-                options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
-
+                //options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+                options.UseNpgsql(dbConnection));
+                
             services.AddAuthorization();
 
             services.AddIdentityApiEndpoints<ApplicationUser>()
