@@ -2,7 +2,6 @@
 using Domain.UserAggregate;
 using Domain.UserAggregate.ValueObjects;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using System.Text.RegularExpressions;
 
 namespace Infrastructure.Persistence.Repositories
@@ -22,17 +21,17 @@ namespace Infrastructure.Persistence.Repositories
 
         public async Task<List<User>> FindUsers(string email, string firstName, string lastName)
         {
-            if (!email.IsNullOrEmpty() && IsEmail(email))
+            if (!string.IsNullOrEmpty(email) && IsEmail(email))
                 return await _dbContext.DomainUsers
                     .Include(u => u.ApplicationUser)
                     .Where(u => u.ApplicationUser.Email == email).ToListAsync();
             else 
             {
-                if (firstName.IsNullOrEmpty() && !lastName.IsNullOrEmpty())
+                if (string.IsNullOrEmpty(firstName) && !string.IsNullOrEmpty(lastName))
                     return await _dbContext.DomainUsers
                         .Include(u => u.ApplicationUser)
                         .Where(u => u.LastName == lastName).ToListAsync();
-                else if (!firstName.IsNullOrEmpty() && lastName.IsNullOrEmpty())
+                else if (!string.IsNullOrEmpty(firstName) && string.IsNullOrEmpty(lastName))
                     return await  _dbContext.DomainUsers
                         .Include(u => u.ApplicationUser)
                         .Where(u => u.FirstName == firstName).ToListAsync();

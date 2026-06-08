@@ -26,12 +26,11 @@ namespace Infrastructure
             this IServiceCollection services,
             ConfigurationManager configuration)
         {
-           var dbConnection = configuration["ConnectionStrings:Events:SqlDb"];
-
+           var dbConnection = Environment.GetEnvironmentVariable("DB_CONNECTION") 
+           ?? configuration.GetConnectionString("EventsSqlDb");
+           
             services.AddDbContext<EventAppDbContext>(options =>
-                //options.UseSqlServer(dbConnection));
-                //options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
-                options.UseNpgsql(dbConnection));
+               options.UseNpgsql(dbConnection));
                 
             services.AddAuthorization();
 

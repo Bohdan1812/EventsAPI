@@ -21,7 +21,10 @@ services:
   # 2. КОНТЕЙНЕР ТВОГО .NET WEB API
   # =========================================================
   events-web-api:
-    image: events-api:latest   # Docker візьме твій локальний образ, який ми щойно збирали
+    #image: events-api:latest   # Docker візьме твій локальний образ, який ми щойно збирали
+    build: 
+      context: .
+      dockerfile: EventsAPI/Dockerfile
     container_name: events-web-api-app
     restart: always
     ports:
@@ -29,7 +32,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development # Вмикаємо режим розробки, щоб працював Swagger
       # Перевизначаємо Connection String! Замість localhost пишемо ім'я сервісу бази даних "events-db"
-      - ConnectionStrings__DefaultConnection=Host=events-db;Port=5432;Database=EventsDb;Username=pukas_admin;Password=super_secret_password;
+      - DB_CONNECTION=Host=events-db;Port=5432;Database=EventsDb;Username=pukas_admin;Password=super_secret_password;
     networks:
       - events-network
     depends_on:

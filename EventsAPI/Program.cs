@@ -3,7 +3,6 @@ using Api.Hubs;
 using Application;
 using Domain.Common.Models;
 using Infrastructure;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.FileProviders;
 
 
