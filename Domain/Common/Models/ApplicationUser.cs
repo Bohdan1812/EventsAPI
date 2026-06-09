@@ -1,5 +1,4 @@
 ﻿using Domain.UserAggregate;
-using Domain.UserAggregate.ValueObjects;
 using Microsoft.AspNetCore.Identity;
 
 namespace Domain.Common.Models

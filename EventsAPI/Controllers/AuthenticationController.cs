@@ -10,6 +10,7 @@ using Domain.Common.Models;
 
 namespace Api.Controllers
 {
+    /*
     [Route("Auth")]
     public class AuthenticationController : ApiController
     {
@@ -36,4 +37,5 @@ namespace Api.Controllers
                 errors => Problem(errors));
         }
     }
+    */
 }

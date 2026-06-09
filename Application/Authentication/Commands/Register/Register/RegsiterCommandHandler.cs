@@ -3,10 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Identity;
 using ErrorOr;
 using Domain.UserAggregate;
-using Domain.UserAggregate.ValueObjects;
 using Application.Persistence.Repositories;
-using Domain.OrganizerAggregate;
-using Domain.OrganizerAggregate.ValueObjects;
 using Application.Common.Errors;
 
 namespace Application.Authentication.Commands.Register

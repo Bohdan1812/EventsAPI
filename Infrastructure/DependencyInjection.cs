@@ -4,9 +4,13 @@ using Domain.Common.Models;
 using Infrastructure.Persistence;
 using Infrastructure.Persistence.Repositories;
 using Infrastructure.Persistence.Services;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace Infrastructure
 {
@@ -34,9 +38,38 @@ namespace Infrastructure
                 
             services.AddAuthorization();
 
-            services.AddIdentityApiEndpoints<ApplicationUser>()
-                .AddEntityFrameworkStores<EventAppDbContext> ();
-        
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    
+                    ValidIssuer = configuration["JwtSettings:Issuer"],
+                    ValidAudience = configuration["JwtSettings:Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JwtSettings:SecretKey"]!)),
+                    ClockSkew = TimeSpan.Zero
+                };
+            });
+            // services.AddIdentityApiEndpoints<ApplicationUser>()
+            //     .AddEntityFrameworkStores<EventAppDbContext> ();
+
+            services.AddSingleton(TimeProvider.System);
+
+            services.AddDataProtection();
+
+            services.AddIdentityCore<ApplicationUser>()
+                .AddEntityFrameworkStores<EventAppDbContext>()
+                .AddDefaultTokenProviders()
+                .AddSignInManager<SignInManager<ApplicationUser>>();
+
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IOrganizerRepository, OrganizerRepository>();
             services.AddScoped<IEventRepository, EventRepository>();
@@ -46,6 +79,7 @@ namespace Infrastructure
             services.AddScoped<IMessageRepository, MessageRepository>();
             services.AddScoped<IUserPhotoService, UserPhotoService>();    
             services.AddScoped<IEventPhotoService, EventPhotoService>();
+            services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
             
             return services;
         }

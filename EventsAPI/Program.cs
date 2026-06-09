@@ -2,6 +2,7 @@ using Api;
 using Api.Hubs;
 using Application;
 using Domain.Common.Models;
+using EventsApi.Endpoints;
 using Infrastructure;
 using Microsoft.Extensions.FileProviders;
 
@@ -40,7 +41,7 @@ var app = builder.Build();
     }
 
     //app.UseExceptionHandler("/error");
-    app.MapIdentityApi<ApplicationUser>();
+    //app.MapIdentityApi<ApplicationUser>();
     app.UseAuthentication();
     app.UseAuthorization();
     app.UseHttpsRedirection();
@@ -58,5 +59,8 @@ var app = builder.Build();
             Path.Combine(builder.Environment.ContentRootPath, "EventPhotos")),
         RequestPath = "/eventPhotos"
     });//Need to confiure authorization
+
+    app.MapAuthEndpoints();//Додавання endpoints для аутентифікації (min api)
+
     app.Run();
 }
