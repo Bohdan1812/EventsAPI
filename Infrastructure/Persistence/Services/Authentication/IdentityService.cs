@@ -44,7 +44,7 @@ namespace Application.Persistence.Services.Authentication
             if (deleteAppUserResult.Succeeded)
                 return appUserId;
  
-            return ApplicationUserError.ApplicationUserNotDeleted(
+            return ApplicationUserError.ApplicationUserUnexpectedError(
                 string.Join(", ", deleteAppUserResult.Errors
                     .Select(e => e.Code)),
                 string.Join(", ", deleteAppUserResult.Errors
@@ -88,23 +88,7 @@ namespace Application.Persistence.Services.Authentication
             var result = await _userManager.CreateAsync(appUser, password);
 
             if (result.Succeeded)
-            {
-                appUser = await _userManager.FindByEmailAsync(appUser.Email);
-
-                if (appUser is not null)
-                {
-                    var user = new User(
-                        firstName,
-                        lastName,
-                        email,
-                        appUser.Id);
-
-                    await _userRepository.Add(user);
-
-                    return user.ApplicationUserId;
-                }
-                return ApplicationUserError.ApplicationUserNotAdded;
-            }
+               return appUser.Id;
             else 
             {
                 return Error.Validation(code: string.Join(", ", result.Errors

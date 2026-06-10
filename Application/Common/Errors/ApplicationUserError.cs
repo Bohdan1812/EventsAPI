@@ -16,7 +16,7 @@ namespace Application.Common.Errors
             code: "ApplicationUser.NotAdded",
             description: "Unexpected error occured. This applicationUser was not added to database!");
 
-        public static Error ApplicationUserNotDeleted(string code, string description) => Error.Failure(
+        public static Error ApplicationUserUnexpectedError(string code, string description) => Error.Failure(
           code: code,
           description: description);
         
