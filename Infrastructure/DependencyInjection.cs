@@ -82,6 +82,8 @@ namespace Infrastructure
             services.AddScoped<IEventPhotoService, EventPhotoService>();
             services.AddScoped<JwtTokenGenerator>();
             services.AddScoped<IIdentityService, IdentityService>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            
             
             return services;
         }

@@ -12,10 +12,13 @@ namespace Application.Users.Commands.Delete
         private readonly IIdentityService _identityService;
         private readonly IUserRepository _userRepository;
 
-        public DeleteAccountCommandHandler(IIdentityService identityService, IUserRepository userRepository)
+        private readonly IUnitOfWork _unitOfWork;
+
+        public DeleteAccountCommandHandler(IIdentityService identityService, IUserRepository userRepository, IUnitOfWork unitOfWork)
         {
             _identityService = identityService;
             _userRepository = userRepository;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<ErrorOr<string>> Handle(DeleteAccountCommand request, CancellationToken cancellationToken)
@@ -34,15 +37,29 @@ namespace Application.Users.Commands.Delete
             if (user.Organizer.Events.Count > 0)
                 return OrganizerError.OrganizerContiansEvents;
             
+            await _unitOfWork.BeginTransactionAsync(cancellationToken);
+            
+            try
+            {
+                var result = await _identityService.DeleteUserAsync(request.AppUserId, request.Password);
+                
+                if (result.IsError)
+                {
+                    await _unitOfWork.RollbackTransactionAsync(cancellationToken);
+                    return result.Errors;
+                }
+                
+                await _userRepository.Remove(user.Id);
 
-            var result = await _identityService.DeleteUserAsync(request.AppUserId, request.Password);
-            
-            if (result.IsError)
-                return result.Errors;
-            
-            await _userRepository.Remove(user.Id);
-            
-            return $"Account {result.Value} deleted successfully!";
+                await _unitOfWork.CommitTransactionAsync(cancellationToken);
+                
+                return $"Account {result.Value} deleted successfully!";
+            }
+            catch (Exception ex)
+            {
+                await _unitOfWork.RollbackTransactionAsync(cancellationToken);
+                return ApplicationUserError.DeleteAccountFailed(ex.Message);
+            }
         }
     }
 }
