@@ -26,14 +26,17 @@ namespace Application.Users.Queries.GetUserByParticipation
             if (participation is null)
                 return ParticipationError.ParticipationNotFound;
 
-            var user = await _userRepository.GetFullUser(participation.UserId);
+            var user = await _userRepository.GetUser(participation.UserId);
 
+            if (user is null)
+                return UserError.UserNotFound;
+                
             var userInfo = new UserInfo(
-                participation.User.Id.Value, 
-                participation.User.FirstName,
-                participation.User.LastName,
-                participation.User.ApplicationUser.Email,
-                participation.User.PhotoPath);
+                user.Id.Value, 
+                user.FirstName,
+                user.LastName,
+                user.Email,
+                user.PhotoPath);
 
             return userInfo;
         }

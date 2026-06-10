@@ -1,5 +1,4 @@
-﻿using Domain.Common.Models;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Identity;
 using ErrorOr;
 using Application.Persistence.Repositories;
@@ -13,13 +12,10 @@ namespace Application.Users.Commands.Update
     {
         private readonly IUserRepository _userRepository;
 
-        private readonly UserManager<ApplicationUser> _userManager;
         public UpdateUserCommandHandler(
-            IUserRepository userRepository,
-            UserManager<ApplicationUser> userManager)
+            IUserRepository userRepository)
         {
             _userRepository = userRepository;
-            _userManager = userManager;
         }
 
         public async Task<ErrorOr<string>> Handle(UpdateUserCommand request, CancellationToken cancellationToken)

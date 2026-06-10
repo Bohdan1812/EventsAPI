@@ -1,5 +1,6 @@
 using Application.Authentication.Commands.Login;
 using Application.Authentication.Commands.Register;
+using Contracts.Authentication;
 using MediatR;
 
 namespace EventsApi.Endpoints
@@ -14,8 +15,8 @@ namespace EventsApi.Endpoints
             {
                 var result = await sender.Send(command);
 
-                return result.Match(
-                    token => Results.Ok(token),
+                    return result.Match(
+                        loginResponse => Results.Ok(new LoginResponse(loginResponse.token, loginResponse.expiryMinutes)),
                     errors => Results.BadRequest(errors)
                 );
             });

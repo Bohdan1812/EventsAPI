@@ -1,6 +1,5 @@
 ﻿using Application.Common.Errors;
 using Application.Persistence.Repositories;
-using Domain.EventAggregate;
 using Domain.EventAggregate.ValueObjects;
 using ErrorOr;
 using MediatR;

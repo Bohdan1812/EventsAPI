@@ -32,7 +32,7 @@ namespace Application.Users.Queries.GetOrganizerInfo
             if (user is null)
                 return UserError.UserNotFound;
 
-            return new UserInfo(user.Id.Value, user.FirstName, user.LastName, user.ApplicationUser.Email, user.PhotoPath);
+            return new UserInfo(user.Id.Value, user.FirstName, user.LastName, user.Email, user.PhotoPath);
         }
     }
 }

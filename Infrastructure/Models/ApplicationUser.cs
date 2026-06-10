@@ -1,7 +1,7 @@
 ﻿using Domain.UserAggregate;
 using Microsoft.AspNetCore.Identity;
 
-namespace Domain.Common.Models
+namespace Infrastructure.Models
 {
     public class ApplicationUser : IdentityUser<Guid>
     {

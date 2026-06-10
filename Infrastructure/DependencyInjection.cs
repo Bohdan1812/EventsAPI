@@ -1,6 +1,5 @@
 ﻿using Application.Persistence.Repositories;
 using Application.Persistence.Services;
-using Domain.Common.Models;
 using Infrastructure.Persistence;
 using Infrastructure.Persistence.Repositories;
 using Infrastructure.Persistence.Services;
@@ -11,6 +10,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Application.Persistence.Services.Authentication;
+using Infrastructure.Models;
 
 namespace Infrastructure
 {
@@ -79,7 +80,8 @@ namespace Infrastructure
             services.AddScoped<IMessageRepository, MessageRepository>();
             services.AddScoped<IUserPhotoService, UserPhotoService>();    
             services.AddScoped<IEventPhotoService, EventPhotoService>();
-            services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
+            services.AddScoped<JwtTokenGenerator>();
+            services.AddScoped<IIdentityService, IdentityService>();
             
             return services;
         }

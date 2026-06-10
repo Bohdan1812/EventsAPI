@@ -2,11 +2,9 @@
 using Application.Users.Commands.Update;
 using Contracts.User;
 using Application.Users.Queries.GetCurrentUserInfo;
-using Application.Users.Dto;
 using Application.Users.Queries.GetUserInfo;
 using Application.Users.Queries.GetUserByParticipation;
 using Application.Users.Queries.FindUsers;
-using Domain.UserAggregate;
 using Application.Users.Queries.GetParticipantsUserInfo;
 namespace Api.Common.Mapping
 {

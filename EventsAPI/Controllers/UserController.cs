@@ -1,5 +1,4 @@
-﻿using Application.Events.Commands.SubEventCommands.AddSubEvent;
-using Application.Users.Commands.Delete;
+﻿using Application.Users.Commands.Delete;
 using Application.Users.Commands.RemoveUserPhoto;
 using Application.Users.Commands.SetUserPhoto;
 using Application.Users.Commands.Update;
@@ -12,12 +11,10 @@ using Application.Users.Queries.GetUserByParticipation;
 using Application.Users.Queries.GetUserInfo;
 using Contracts.Authentication;
 using Contracts.User;
-using Domain.Common.Models;
 using Domain.UserAggregate;
 using ErrorOr;
 using MapsterMapper;
 using MediatR;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
@@ -28,14 +25,12 @@ namespace Api.Controllers
     {
         private readonly ISender _mediator;
         private readonly IMapper _mapper;
-        private readonly UserManager<ApplicationUser> _userManager;
 
 
-        public UserController(IMapper mapper, ISender mediator, UserManager<ApplicationUser> userManager)
+        public UserController(IMapper mapper, ISender mediator)
         {
             _mapper = mapper;
             _mediator = mediator;
-            _userManager = userManager;
         }
 
 
@@ -69,7 +64,7 @@ namespace Api.Controllers
                 return BadRequest("User not found!");
             }
 
-            var command = _mapper.Map<DeleteAccountCommand>((userId, request));
+            var command = _mapper.Map<DeleteAccountCommand>((new Guid(userId), request));
 
             ErrorOr<string> deleteResult = await _mediator.Send(command);
 
@@ -177,7 +172,7 @@ namespace Api.Controllers
 
                 foreach (var user in result)
                 {
-                    mappedResult.Add(new UserInfoResponse(user.Id.Value, user.FirstName, user.LastName, user.ApplicationUser.Email));
+                    mappedResult.Add(new UserInfoResponse(user.Id.Value, user.FirstName, user.LastName, user.Email));
                 }
 
                 return Ok(mappedResult);

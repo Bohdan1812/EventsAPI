@@ -12,7 +12,7 @@ namespace Infrastructure.Persistence.Configurations
         public void Configure(EntityTypeBuilder<User> builder)
         {
             ConfigureUserTable(builder);
-            ConfigureApplicationUser(builder);
+            //ConfigureApplicationUser(builder);
             ConfigureJoinRequests(builder);
             ConfigureInvites(builder);
             ConfigureParticipations(builder);
@@ -29,6 +29,7 @@ namespace Infrastructure.Persistence.Configurations
                 .HasConversion(
                     id => id.Value,
                     value => UserId.Create(value));
+            builder.HasIndex(x => x.ApplicationUserId).IsUnique();
         }
 
         private static void ConfigureJoinRequests(EntityTypeBuilder<User> builder)
@@ -54,13 +55,13 @@ namespace Infrastructure.Persistence.Configurations
                 .OnDelete(DeleteBehavior.Cascade);
         }
 
-        private static void ConfigureApplicationUser(EntityTypeBuilder<User> builder)
-        {
-            builder.HasOne(u => u.ApplicationUser)
-                .WithOne(a => a.User)
-                .HasForeignKey<User>(u => u.ApplicationUserId)
-                .OnDelete(DeleteBehavior.Cascade);
-        }
+        // private static void ConfigureApplicationUser(EntityTypeBuilder<User> builder)
+        // {
+        //     builder.HasOne(u => u.ApplicationUser)
+        //         .WithOne(a => a.User)
+        //         .HasForeignKey<User>(u => u.ApplicationUserId)
+        //         .OnDelete(DeleteBehavior.Cascade);
+        // }
 
         private static void ConfigureOrganizer(EntityTypeBuilder<User> builder)
         {

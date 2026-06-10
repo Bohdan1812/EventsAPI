@@ -19,12 +19,12 @@ namespace Application.Users.Queries.GetUserInfo
         public async Task<ErrorOr<UserInfo>> Handle(GetUserInfoQuery request, CancellationToken cancellationToken)
         {
             var userId = UserId.Create(request.UserId);
-            var user = await _userRepository.GetFullUser(userId);
+            var user = await _userRepository.GetUser(userId);
 
             if (user is null)
                 return UserError.UserNotFound;
 
-            return new UserInfo(user.Id.Value, user.FirstName, user.LastName, user.ApplicationUser.Email, user.PhotoPath);
+            return new UserInfo(user.Id.Value, user.FirstName, user.LastName, user.Email, user.PhotoPath);
         }
     }
 }

@@ -20,8 +20,9 @@ namespace Application.Common.Errors
           code: code,
           description: description);
         
-        public static Error ApplicationUserWrongPassword => Error.Unauthorized(
-            code: "ApplicationUser.WrongPassword",
-            description: "Wrong password!");
+        public static Error ApplicationUserFailedLogin => Error.Unauthorized(
+            code: "ApplicationUser.LoginFailed",
+            description: "Login failed. Invalid email or password.");
+            
     }
 }

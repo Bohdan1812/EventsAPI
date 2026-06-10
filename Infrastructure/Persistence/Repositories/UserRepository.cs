@@ -23,21 +23,17 @@ namespace Infrastructure.Persistence.Repositories
         {
             if (!string.IsNullOrEmpty(email) && IsEmail(email))
                 return await _dbContext.DomainUsers
-                    .Include(u => u.ApplicationUser)
-                    .Where(u => u.ApplicationUser.Email == email).ToListAsync();
+                    .Where(u => u.Email == email).ToListAsync();
             else 
             {
                 if (string.IsNullOrEmpty(firstName) && !string.IsNullOrEmpty(lastName))
                     return await _dbContext.DomainUsers
-                        .Include(u => u.ApplicationUser)
                         .Where(u => u.LastName == lastName).ToListAsync();
                 else if (!string.IsNullOrEmpty(firstName) && string.IsNullOrEmpty(lastName))
                     return await  _dbContext.DomainUsers
-                        .Include(u => u.ApplicationUser)
                         .Where(u => u.FirstName == firstName).ToListAsync();
                 else
                     return await _dbContext.DomainUsers
-                        .Include(u => u.ApplicationUser)
                         .Where(u => u.LastName == lastName
                         && u.FirstName == firstName).ToListAsync();
             }
@@ -52,7 +48,6 @@ namespace Infrastructure.Persistence.Repositories
         public async Task<User?> GetFullUser(UserId userId)
         {
             return await _dbContext.DomainUsers
-                .Include(u => u.ApplicationUser)
                 .Include(u => u.JoinRequests)
                 .Include(u => u.Invites)
                 .Include(u => u.Organizer)

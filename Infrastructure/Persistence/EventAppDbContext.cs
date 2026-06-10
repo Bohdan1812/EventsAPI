@@ -7,6 +7,7 @@ using Domain.JoinRequestAggregate;
 using Domain.OrganizerAggregate;
 using Domain.ParticipationAggregate;
 using Domain.UserAggregate;
+using Infrastructure.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
