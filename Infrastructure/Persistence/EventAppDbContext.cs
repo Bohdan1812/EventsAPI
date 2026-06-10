@@ -1,4 +1,5 @@
-﻿using Domain.ChatAggregate;
+﻿using Application.Persistence.Services;
+using Domain.ChatAggregate;
 using Domain.ChatAggregate.Entities;
 using Domain.Common.Models;
 using Domain.EventAggregate;

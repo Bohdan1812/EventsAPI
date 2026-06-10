@@ -58,7 +58,7 @@ namespace Application.Users.Commands.Delete
             catch (Exception ex)
             {
                 await _unitOfWork.RollbackTransactionAsync(cancellationToken);
-                return ApplicationUserError.DeleteAccountFailed(ex.Message);
+                return ApplicationUserError.ApplicationUserNotDeleted("500", ex.Message);
             }
         }
     }
